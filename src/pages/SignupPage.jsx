@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { GraduationCap, Eye, EyeOff, CheckCircle, ArrowRight, Briefcase } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { GraduationCap, Eye, EyeOff, CheckCircle, ArrowRight, Briefcase, Loader, AlertCircle } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 const universities = [
   'LUMS', 'NUST', 'IBA Karachi', 'Aga Khan University',
@@ -31,28 +32,85 @@ const benefits = [
   'Application deadline reminders',
 ]
 
+function friendlyError(msg) {
+  if (!msg) return 'Something went wrong. Please try again.'
+  if (msg.includes('already registered') || msg.includes('already been registered'))
+    return 'An account with this email already exists. Try logging in instead.'
+  if (msg.includes('Password should be at least'))
+    return 'Password must be at least 8 characters.'
+  if (msg.includes('Unable to validate email'))
+    return 'Please enter a valid email address.'
+  if (msg.includes('Email rate limit'))
+    return 'Too many attempts. Please wait a few minutes and try again.'
+  return msg
+}
+
 export default function SignupPage() {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
-  const [step, setStep] = useState(1)
+  const [step, setStep]         = useState(1)
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState(null)
+  const [submitted, setSubmitted] = useState(false)
+
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', password: '',
     university: '', field: '', graduationYear: '', region: '',
-    agreeTerms: false,
   })
-  const [submitted, setSubmitted] = useState(false)
 
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }))
 
   const handleStep1 = e => {
     e.preventDefault()
+    setError(null)
     setStep(2)
   }
 
-  const handleStep2 = e => {
+  const handleStep2 = async e => {
     e.preventDefault()
-    setSubmitted(true)
+    setLoading(true)
+    setError(null)
+
+    try {
+      // 1. Create the auth user
+      const { data, error: authError } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+        options: {
+          data: {
+            first_name: form.firstName,
+            last_name: form.lastName,
+          },
+        },
+      })
+
+      if (authError) throw authError
+
+      // 2. Insert the student profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: data.user.id,
+          first_name: form.firstName,
+          last_name: form.lastName,
+          email: form.email,
+          university: form.university,
+          field_of_study: form.field,
+          graduation_year: parseInt(form.graduationYear),
+          preferred_region: form.region,
+        })
+
+      if (profileError) throw profileError
+
+      setSubmitted(true)
+    } catch (err) {
+      setError(friendlyError(err.message))
+    } finally {
+      setLoading(false)
+    }
   }
 
+  // ── Success screen ────────────────────────────────────────────────────────
   if (submitted) {
     return (
       <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
@@ -70,7 +128,7 @@ export default function SignupPage() {
             Welcome to ConnectGrad!
           </h2>
           <p style={{ fontSize: 15, color: '#64748b', marginBottom: 32 }}>
-            Your account has been created. We have sent a verification link to <span style={{ color: '#10b981' }}>{form.email}</span>.
+            Your account has been created. You're all set.
           </p>
           <Link to="/jobs" style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
@@ -85,12 +143,10 @@ export default function SignupPage() {
     )
   }
 
+  // ── Form ─────────────────────────────────────────────────────────────────
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#030a1a',
-      display: 'flex',
-    }}>
+    <div style={{ minHeight: '100vh', background: '#030a1a', display: 'flex' }}>
+
       {/* Left panel */}
       <div style={{
         flex: '0 0 420px',
@@ -119,7 +175,6 @@ export default function SignupPage() {
           <p style={{ fontSize: 14, color: '#64748b', lineHeight: 1.7, marginBottom: 36 }}>
             Join thousands of students who found their dream internship or graduate role through ConnectGrad.
           </p>
-
           <ul style={{ listStyle: 'none' }}>
             {benefits.map(b => (
               <li key={b} style={{
@@ -134,8 +189,7 @@ export default function SignupPage() {
         </div>
 
         <div style={{
-          marginTop: 40,
-          padding: 20, borderRadius: 12,
+          marginTop: 40, padding: 20, borderRadius: 12,
           background: 'rgba(16,185,129,0.07)',
           border: '1px solid rgba(16,185,129,0.15)',
         }}>
@@ -156,13 +210,13 @@ export default function SignupPage() {
         </div>
       </div>
 
-      {/* Right panel – form */}
+      {/* Right panel */}
       <div style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '40px 24px',
-        minHeight: '100vh',
+        padding: '40px 24px', minHeight: '100vh',
       }}>
         <div style={{ width: '100%', maxWidth: 480 }}>
+
           {/* Step indicator */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 36 }}>
             {[1, 2].map(s => (
@@ -179,12 +233,28 @@ export default function SignupPage() {
                 <span style={{ fontSize: 13, color: step === s ? '#f1f5f9' : '#475569', fontWeight: step === s ? 600 : 400 }}>
                   {s === 1 ? 'Account' : 'Your Profile'}
                 </span>
-                {s < 2 && <div style={{ width: 40, height: 1, background: step > s ? '#10b981' : 'rgba(255,255,255,0.1)', marginLeft: 4 }} />}
+                {s < 2 && (
+                  <div style={{ width: 40, height: 1, background: step > s ? '#10b981' : 'rgba(255,255,255,0.1)', marginLeft: 4 }} />
+                )}
               </div>
             ))}
           </div>
 
-          {step === 1 ? (
+          {/* Error banner */}
+          {error && (
+            <div style={{
+              display: 'flex', alignItems: 'flex-start', gap: 10,
+              padding: '12px 16px', borderRadius: 10, marginBottom: 20,
+              background: 'rgba(239,68,68,0.08)',
+              border: '1px solid rgba(239,68,68,0.25)',
+            }}>
+              <AlertCircle size={15} color="#f87171" style={{ flexShrink: 0, marginTop: 1 }} />
+              <p style={{ fontSize: 13, color: '#f87171', lineHeight: 1.5 }}>{error}</p>
+            </div>
+          )}
+
+          {/* ── Step 1 ── */}
+          {step === 1 && (
             <>
               <h2 style={{ fontSize: 26, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Create your account</h2>
               <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32 }}>
@@ -192,16 +262,15 @@ export default function SignupPage() {
                 <Link to="#" style={{ color: '#10b981', textDecoration: 'none' }}>Log in</Link>
               </p>
 
-              {/* Social sign up */}
               <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
-                {['Continue with Google', 'Continue with LinkedIn'].map(label => (
+                {['Google', 'LinkedIn'].map(label => (
                   <button key={label} style={{
                     flex: 1, padding: '11px 0', borderRadius: 9, cursor: 'pointer',
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.1)',
                     color: '#94a3b8', fontSize: 13, fontWeight: 500,
                   }}>
-                    {label.replace('Continue with ', '')}
+                    Continue with {label}
                   </button>
                 ))}
               </div>
@@ -215,61 +284,46 @@ export default function SignupPage() {
               <form onSubmit={handleStep1}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <InputField label="First name" value={form.firstName} onChange={v => update('firstName', v)} placeholder="Ali" required />
-                  <InputField label="Last name" value={form.lastName} onChange={v => update('lastName', v)} placeholder="Khan" required />
+                  <InputField label="Last name"  value={form.lastName}  onChange={v => update('lastName', v)}  placeholder="Khan" required />
                 </div>
                 <div style={{ marginBottom: 14 }}>
                   <InputField label="Email address" type="email" value={form.email} onChange={v => update('email', v)} placeholder="ali@university.edu" required />
                 </div>
-                <div style={{ marginBottom: 24, position: 'relative' }}>
-                  <label style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', display: 'block', marginBottom: 7 }}>Password</label>
+                <div style={{ marginBottom: 24 }}>
+                  <label style={labelStyle}>Password</label>
                   <div style={{ position: 'relative' }}>
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={form.password}
                       onChange={e => update('password', e.target.value)}
                       placeholder="Min. 8 characters"
-                      required
-                      minLength={8}
-                      style={{
-                        width: '100%', padding: '11px 42px 11px 14px', borderRadius: 9,
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        color: '#f1f5f9', fontSize: 14, outline: 'none',
-                        boxSizing: 'border-box',
-                      }}
+                      required minLength={8}
+                      style={{ ...inputStyle, paddingRight: 42 }}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-                        background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex',
-                      }}
+                      style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex' }}
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>
 
-                <button type="submit" style={{
-                  width: '100%', padding: '13px 0', borderRadius: 10,
-                  background: 'linear-gradient(135deg, #059669, #10b981)',
-                  border: 'none', cursor: 'pointer',
-                  color: 'white', fontSize: 15, fontWeight: 700,
-                  boxShadow: '0 0 24px rgba(16,185,129,0.35)',
-                  marginBottom: 16,
-                }}>
+                <button type="submit" style={submitBtnStyle(true)}>
                   Continue
                 </button>
-
-                <p style={{ fontSize: 12, color: '#475569', textAlign: 'center' }}>
-                  By signing up, you agree to our{' '}
+                <p style={{ fontSize: 12, color: '#475569', textAlign: 'center', marginTop: 16 }}>
+                  By signing up you agree to our{' '}
                   <a href="#" style={{ color: '#64748b' }}>Terms</a> and{' '}
                   <a href="#" style={{ color: '#64748b' }}>Privacy Policy</a>
                 </p>
               </form>
             </>
-          ) : (
+          )}
+
+          {/* ── Step 2 ── */}
+          {step === 2 && (
             <>
               <h2 style={{ fontSize: 26, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Tell us about yourself</h2>
               <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32 }}>
@@ -299,19 +353,12 @@ export default function SignupPage() {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <div>
-                    <label style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', display: 'block', marginBottom: 7 }}>
-                      Graduation year
-                    </label>
+                    <label style={labelStyle}>Graduation year</label>
                     <select
                       value={form.graduationYear}
                       onChange={e => update('graduationYear', e.target.value)}
                       required
-                      style={{
-                        width: '100%', padding: '11px 14px', borderRadius: 9,
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        color: form.graduationYear ? '#f1f5f9' : '#475569', fontSize: 14, outline: 'none',
-                      }}
+                      style={{ ...inputStyle, color: form.graduationYear ? '#f1f5f9' : '#475569' }}
                     >
                       <option value="">Select year</option>
                       {[2025, 2026, 2027, 2028, 2029].map(y => (
@@ -319,28 +366,25 @@ export default function SignupPage() {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <SelectField
-                      label="Preferred region"
-                      value={form.region}
-                      onChange={v => update('region', v)}
-                      options={['Pakistan', 'UK', 'USA', 'Europe', 'Open to all']}
-                      placeholder="Select region"
-                      required
-                    />
-                  </div>
+                  <SelectField
+                    label="Preferred region"
+                    value={form.region}
+                    onChange={v => update('region', v)}
+                    options={['Pakistan', 'UK', 'USA', 'Europe', 'Open to all']}
+                    placeholder="Select region"
+                    required
+                  />
                 </div>
 
                 <div style={{
-                  padding: 16, borderRadius: 10,
+                  padding: 16, borderRadius: 10, marginBottom: 24,
                   background: 'rgba(16,185,129,0.07)',
                   border: '1px solid rgba(16,185,129,0.15)',
-                  marginBottom: 24,
                 }}>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
                     <Briefcase size={16} color="#10b981" style={{ marginTop: 1, flexShrink: 0 }} />
                     <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
-                      You'll receive personalized job recommendations based on your profile. You can update these preferences anytime.
+                      Your profile is saved to your account. You can update preferences anytime.
                     </p>
                   </div>
                 </div>
@@ -348,58 +392,78 @@ export default function SignupPage() {
                 <div style={{ display: 'flex', gap: 10 }}>
                   <button
                     type="button"
-                    onClick={() => setStep(1)}
+                    onClick={() => { setStep(1); setError(null) }}
+                    disabled={loading}
                     style={{
                       flex: '0 0 100px', padding: '13px 0', borderRadius: 10,
                       background: 'rgba(255,255,255,0.04)',
                       border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#94a3b8', fontSize: 15, fontWeight: 500, cursor: 'pointer',
+                      color: '#94a3b8', fontSize: 15, fontWeight: 500,
+                      cursor: loading ? 'not-allowed' : 'pointer',
                     }}
                   >
                     Back
                   </button>
-                  <button type="submit" style={{
-                    flex: 1, padding: '13px 0', borderRadius: 10,
-                    background: 'linear-gradient(135deg, #059669, #10b981)',
-                    border: 'none', cursor: 'pointer',
-                    color: 'white', fontSize: 15, fontWeight: 700,
-                    boxShadow: '0 0 24px rgba(16,185,129,0.35)',
-                  }}>
-                    Create my account
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    style={submitBtnStyle(!loading)}
+                  >
+                    {loading
+                      ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Creating account…</>
+                      : 'Create my account'
+                    }
                   </button>
                 </div>
               </form>
             </>
           )}
+
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
-          .signup-left { display: none !important; }
-        }
+        @media (max-width: 768px) { .signup-left { display: none !important; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </div>
   )
 }
 
+// ── Shared styles ─────────────────────────────────────────────────────────────
+
+const labelStyle = {
+  fontSize: 13, fontWeight: 500, color: '#94a3b8', display: 'block', marginBottom: 7,
+}
+
+const inputStyle = {
+  width: '100%', padding: '11px 14px', borderRadius: 9, boxSizing: 'border-box',
+  background: 'rgba(255,255,255,0.04)',
+  border: '1px solid rgba(255,255,255,0.1)',
+  color: '#f1f5f9', fontSize: 14, outline: 'none',
+}
+
+const submitBtnStyle = (active) => ({
+  flex: 1, width: '100%', padding: '13px 0', borderRadius: 10, border: 'none',
+  background: active ? 'linear-gradient(135deg, #059669, #10b981)' : 'rgba(255,255,255,0.06)',
+  color: active ? 'white' : '#475569',
+  fontSize: 15, fontWeight: 700,
+  cursor: active ? 'pointer' : 'not-allowed',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+  boxShadow: active ? '0 0 24px rgba(16,185,129,0.3)' : 'none',
+  transition: 'all 0.2s',
+})
+
+// ── Reusable fields ───────────────────────────────────────────────────────────
+
 function InputField({ label, type = 'text', value, onChange, placeholder, required }) {
   return (
     <div>
-      <label style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', display: 'block', marginBottom: 7 }}>{label}</label>
+      <label style={labelStyle}>{label}</label>
       <input
-        type={type}
-        value={value}
+        type={type} value={value} placeholder={placeholder} required={required}
         onChange={e => onChange(e.target.value)}
-        placeholder={placeholder}
-        required={required}
-        style={{
-          width: '100%', padding: '11px 14px', borderRadius: 9,
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          color: '#f1f5f9', fontSize: 14, outline: 'none',
-          boxSizing: 'border-box',
-        }}
+        style={inputStyle}
       />
     </div>
   )
@@ -408,17 +472,11 @@ function InputField({ label, type = 'text', value, onChange, placeholder, requir
 function SelectField({ label, value, onChange, options, placeholder, required }) {
   return (
     <div>
-      <label style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', display: 'block', marginBottom: 7 }}>{label}</label>
+      <label style={labelStyle}>{label}</label>
       <select
-        value={value}
+        value={value} required={required}
         onChange={e => onChange(e.target.value)}
-        required={required}
-        style={{
-          width: '100%', padding: '11px 14px', borderRadius: 9,
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          color: value ? '#f1f5f9' : '#475569', fontSize: 14, outline: 'none',
-        }}
+        style={{ ...inputStyle, color: value ? '#f1f5f9' : '#475569' }}
       >
         <option value="">{placeholder}</option>
         {options.map(o => <option key={o} value={o}>{o}</option>)}
