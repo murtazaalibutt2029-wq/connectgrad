@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import {
   ArrowLeft, MapPin, DollarSign, Clock, Calendar, Briefcase,
   Sparkles, Copy, Download, Check, Loader, RotateCcw, ChevronRight, AlertCircle,
@@ -16,11 +17,24 @@ const typeColors = {
 // ─── Cover Letter Generator ───────────────────────────────────────────────────
 
 function CoverLetterGenerator({ job }) {
+  const { profile } = useAuth()
   const [stage, setStage]       = useState('idle')   // idle | form | loading | done | error
   const [copied, setCopied]     = useState(false)
   const [letter, setLetter]     = useState('')
   const [apiError, setApiError] = useState('')
   const [form, setForm]         = useState({ name: '', university: '', degree: '', motivation: '' })
+
+  // Auto-fill from saved profile
+  useEffect(() => {
+    if (profile) {
+      setForm(prev => ({
+        ...prev,
+        name:       prev.name       || `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
+        university: prev.university || profile.university    || '',
+        degree:     prev.degree     || profile.field_of_study || '',
+      }))
+    }
+  }, [profile])
 
   const update = (k, v) => setForm(p => ({ ...p, [k]: v }))
   const filled = form.name && form.university && form.degree
@@ -34,7 +48,7 @@ function CoverLetterGenerator({ job }) {
       const res = await fetch('/api/generate-cover-letter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job, ...form }),
+        body: JSON.stringify({ job, ...form, skills: profile?.skills || '' }),
       })
 
       const data = await res.json()

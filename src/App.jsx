@@ -9,6 +9,8 @@ import ResourcesPage from './pages/ResourcesPage'
 import TrackerPage from './pages/TrackerPage'
 import JobDetailPage from './pages/JobDetailPage'
 import LoginPage from './pages/LoginPage'
+import ProfilePage from './pages/ProfilePage'
+import MassApplyPage from './pages/MassApplyPage'
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/jobs/:id" element={<JobDetailPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/apply/review" element={<MassApplyPage />} />
         </Routes>
       </main>
       <Footer />

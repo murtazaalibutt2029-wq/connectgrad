@@ -14,6 +14,12 @@ export const jobs = [
     description: "Join Arbisoft's engineering team and work on real products used by millions. Ideal for final-year CS students.",
     region: 'Pakistan',
     featured: true,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: false,
+      customQuestions: [],
+    },
   },
   {
     id: 2,
@@ -30,6 +36,15 @@ export const jobs = [
     description: "Barclays' 2-year graduate programme in data & analytics. Open to students from any UK university.",
     region: 'UK',
     featured: true,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: false,
+      customQuestions: [
+        { id: 1, question: 'Why do you want to work in investment banking at Barclays specifically?' },
+        { id: 2, question: 'Describe a time you used data to solve a real problem. What was the impact?' },
+      ],
+    },
   },
   {
     id: 3,
@@ -46,6 +61,17 @@ export const jobs = [
     description: 'Google STEP internship in Product Management. 12-week summer program for penultimate year students.',
     region: 'USA',
     featured: true,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: true,
+      portfolioLabel: 'Work samples or case studies (Google Drive link)',
+      customQuestions: [
+        { id: 1, question: 'Describe a Google product you would improve and how you would approach that.' },
+        { id: 2, question: 'Tell us about a time you led a project from ambiguous brief to clear outcome.' },
+        { id: 3, question: 'How do you prioritise features when resources are limited?' },
+      ],
+    },
   },
   {
     id: 4,
@@ -62,6 +88,13 @@ export const jobs = [
     description: "Systems Limited is Pakistan's largest IT company. Looking for fresh graduates with strong frontend skills.",
     region: 'Pakistan',
     featured: false,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: true,
+      portfolioLabel: 'GitHub profile or portfolio website URL',
+      customQuestions: [],
+    },
   },
   {
     id: 5,
@@ -78,6 +111,15 @@ export const jobs = [
     description: "Unilever's Future Leaders Programme – rotational graduate scheme across brand marketing teams.",
     region: 'UK',
     featured: false,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: false,
+      customQuestions: [
+        { id: 1, question: 'What makes you passionate about FMCG and consumer brands?' },
+        { id: 2, question: 'Describe a marketing campaign (your own or one you admire) and what made it effective.' },
+      ],
+    },
   },
   {
     id: 6,
@@ -94,6 +136,16 @@ export const jobs = [
     description: 'Microsoft is hiring new grad ML engineers to join Azure AI. Strong research or project background required.',
     region: 'USA',
     featured: false,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: true,
+      portfolioLabel: 'GitHub profile or research publications',
+      customQuestions: [
+        { id: 1, question: 'Describe an ML project you built end-to-end. What problem did it solve?' },
+        { id: 2, question: 'How do you approach debugging a model that is underperforming in production?' },
+      ],
+    },
   },
   {
     id: 7,
@@ -110,6 +162,12 @@ export const jobs = [
     description: 'SAP is looking for working students (Werkstudent) in Berlin to support cloud platform engineering teams.',
     region: 'Europe',
     featured: false,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: false,
+      customQuestions: [],
+    },
   },
   {
     id: 8,
@@ -126,6 +184,15 @@ export const jobs = [
     description: "6-month internship in ABN AMRO's Investment Banking division. Open to BSc/MSc Finance students.",
     region: 'Europe',
     featured: false,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: false,
+      customQuestions: [
+        { id: 1, question: 'Why investment banking, and why ABN AMRO specifically?' },
+        { id: 2, question: "What do you know about ABN AMRO's sustainability strategy and how does it align with your values?" },
+      ],
+    },
   },
   {
     id: 9,
@@ -142,8 +209,15 @@ export const jobs = [
     description: 'Netsol Technologies is seeking a UX Design Intern to help improve fintech products used globally.',
     region: 'Pakistan',
     featured: false,
+    requirements: {
+      coverLetter: true,
+      cv: true,
+      portfolio: true,
+      portfolioLabel: 'Figma portfolio or Behance/Dribbble link',
+      customQuestions: [],
+    },
   },
 ]
 
-export const regions = ['All Regions', 'Pakistan', 'UK', 'USA', 'Europe']
+export const regions  = ['All Regions', 'Pakistan', 'UK', 'USA', 'Europe']
 export const jobTypes = ['All Types', 'Internship', 'Graduate Role', 'Full-time', 'Part-time']

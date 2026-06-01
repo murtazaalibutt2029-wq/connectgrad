@@ -2,7 +2,6 @@ import { useState, useMemo, useCallback } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Search, MapPin, Filter, X, CheckSquare, Send, LayoutDashboard } from 'lucide-react'
 import { jobs, regions, jobTypes } from '../data/jobs'
-import { addApplications } from '../utils/applications'
 import JobCard from '../components/JobCard'
 
 export default function JobsPage() {
@@ -53,15 +52,8 @@ export default function JobsPage() {
 
   const handleMassApply = () => {
     const selected = jobs.filter(j => selectedIds.has(j.id))
-    const { added, duplicate } = addApplications(selected)
     setSelectedIds(new Set())
-    if (duplicate > 0 && added === 0) {
-      showToast(`Already applied to all ${duplicate} selected job${duplicate > 1 ? 's' : ''}.`, 'info')
-    } else if (duplicate > 0) {
-      showToast(`Applied to ${added} job${added > 1 ? 's' : ''}. ${duplicate} already in tracker.`, 'success')
-    } else {
-      showToast(`Applied to ${added} job${added > 1 ? 's' : ''}! View in your tracker.`, 'success')
-    }
+    navigate('/apply/review', { state: { jobs: selected } })
   }
 
   const allVisibleSelected = filtered.length > 0 && filtered.every(j => selectedIds.has(j.id))
