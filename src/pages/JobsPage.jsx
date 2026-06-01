@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Search, MapPin, Filter, X, CheckSquare, Send, LayoutDashboard } from 'lucide-react'
 import { jobs, regions, jobTypes } from '../data/jobs'
 import { addApplications } from '../utils/applications'
@@ -7,8 +7,9 @@ import JobCard from '../components/JobCard'
 
 export default function JobsPage() {
   const navigate = useNavigate()
-  const [query, setQuery] = useState('')
-  const [region, setRegion] = useState('All Regions')
+  const [searchParams] = useSearchParams()
+  const [query, setQuery] = useState(() => searchParams.get('search') || '')
+  const [region, setRegion] = useState(() => searchParams.get('region') || 'All Regions')
   const [type, setType] = useState('All Types')
   const [selectedIds, setSelectedIds] = useState(new Set())
   const [toast, setToast] = useState(null) // { message, type }

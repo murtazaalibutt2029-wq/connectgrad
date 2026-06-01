@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowLeft, MapPin, DollarSign, Clock, Calendar, Briefcase,
-  Sparkles, Copy, Download, Check, Loader, RotateCcw, ChevronRight,
+  Sparkles, Copy, Download, Check, Loader, RotateCcw, ChevronRight, AlertCircle,
 } from 'lucide-react'
 import { jobs } from '../data/jobs'
-import { generateCoverLetter } from '../utils/coverLetter'
 
 const typeColors = {
   'Internship':    { bg: 'rgba(16,185,129,0.1)',  color: '#34d399', border: 'rgba(16,185,129,0.2)' },
@@ -17,22 +16,39 @@ const typeColors = {
 // ─── Cover Letter Generator ───────────────────────────────────────────────────
 
 function CoverLetterGenerator({ job }) {
-  const [stage, setStage]       = useState('idle')   // idle | form | loading | done
+  const [stage, setStage]       = useState('idle')   // idle | form | loading | done | error
   const [copied, setCopied]     = useState(false)
   const [letter, setLetter]     = useState('')
+  const [apiError, setApiError] = useState('')
   const [form, setForm]         = useState({ name: '', university: '', degree: '', motivation: '' })
 
   const update = (k, v) => setForm(p => ({ ...p, [k]: v }))
   const filled = form.name && form.university && form.degree
 
-  const handleGenerate = e => {
+  const handleGenerate = async e => {
     e.preventDefault()
     setStage('loading')
-    // Simulate a brief generation delay for UX realism
-    setTimeout(() => {
-      setLetter(generateCoverLetter({ job, ...form }))
+    setApiError('')
+
+    try {
+      const res = await fetch('/api/generate-cover-letter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ job, ...form }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to generate cover letter')
+      }
+
+      setLetter(data.letter)
       setStage('done')
-    }, 1600)
+    } catch (err) {
+      setApiError(err.message)
+      setStage('error')
+    }
   }
 
   const handleCopy = () => {
@@ -211,6 +227,40 @@ function CoverLetterGenerator({ job }) {
             }} />
           ))}
         </div>
+      </div>
+    )
+  }
+
+  // ── Error ────────────────────────────────────────────────────────────────
+  if (stage === 'error') {
+    return (
+      <div style={{
+        background: 'rgba(255,255,255,0.02)',
+        border: '1px solid rgba(239,68,68,0.2)',
+        borderRadius: 20, padding: '40px 28px',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center',
+      }}>
+        <div style={{
+          width: 48, height: 48, borderRadius: 14,
+          background: 'rgba(239,68,68,0.1)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <AlertCircle size={22} color="#f87171" />
+        </div>
+        <div>
+          <p style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', marginBottom: 6 }}>Generation failed</p>
+          <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.6 }}>{apiError}</p>
+        </div>
+        <button
+          onClick={() => setStage('form')}
+          style={{
+            padding: '10px 24px', borderRadius: 9, border: 'none', cursor: 'pointer',
+            background: 'rgba(255,255,255,0.06)',
+            color: '#94a3b8', fontSize: 14, fontWeight: 500,
+          }}
+        >
+          Try again
+        </button>
       </div>
     )
   }

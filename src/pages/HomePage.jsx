@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Search, MapPin, Briefcase, GraduationCap, TrendingUp, Globe, Users, Star, ArrowRight, CheckCircle } from 'lucide-react'
 import { jobs } from '../data/jobs'
 import JobCard from '../components/JobCard'
@@ -60,6 +61,18 @@ const testimonials = [
 const companies = ['Google', 'Microsoft', 'Barclays', 'Unilever', 'SAP', 'McKinsey', 'Arbisoft', 'Netsol']
 
 export default function HomePage() {
+  const navigate = useNavigate()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchRegion, setSearchRegion] = useState('All Regions')
+
+  const handleSearch = e => {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (searchQuery.trim()) params.set('search', searchQuery.trim())
+    if (searchRegion !== 'All Regions') params.set('region', searchRegion)
+    navigate(`/jobs${params.toString() ? `?${params}` : ''}`)
+  }
+
   const featuredJobs = jobs.filter(j => j.featured)
 
   return (
@@ -129,7 +142,7 @@ export default function HomePage() {
           </p>
 
           {/* Search bar */}
-          <div style={{
+          <form onSubmit={handleSearch} style={{
             display: 'flex',
             gap: 0,
             background: 'rgba(255,255,255,0.04)',
@@ -143,6 +156,8 @@ export default function HomePage() {
             <div style={{ display: 'flex', alignItems: 'center', flex: 1, padding: '0 16px', gap: 10 }}>
               <Search size={18} color="#475569" />
               <input
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Job title, company, or keyword..."
                 style={{
                   background: 'none', border: 'none', outline: 'none',
@@ -150,15 +165,14 @@ export default function HomePage() {
                 }}
               />
             </div>
-            <div style={{
-              width: 1, background: 'rgba(255,255,255,0.08)', margin: '8px 0',
-            }} />
+            <div style={{ width: 1, background: 'rgba(255,255,255,0.08)', margin: '8px 0' }} />
             <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px', gap: 8 }}>
               <MapPin size={16} color="#475569" />
-              <select style={{
-                background: 'none', border: 'none', outline: 'none',
-                color: '#64748b', fontSize: 14, cursor: 'pointer',
-              }}>
+              <select
+                value={searchRegion}
+                onChange={e => setSearchRegion(e.target.value)}
+                style={{ background: 'none', border: 'none', outline: 'none', color: '#64748b', fontSize: 14, cursor: 'pointer' }}
+              >
                 <option>All Regions</option>
                 <option>Pakistan</option>
                 <option>UK</option>
@@ -166,23 +180,23 @@ export default function HomePage() {
                 <option>Europe</option>
               </select>
             </div>
-            <Link to="/jobs" style={{
+            <button type="submit" style={{
               padding: '12px 24px', borderRadius: 10,
               background: 'linear-gradient(135deg, #059669, #10b981)',
               color: 'white', fontSize: 15, fontWeight: 600,
-              textDecoration: 'none', whiteSpace: 'nowrap',
+              border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
               boxShadow: '0 0 20px rgba(16,185,129,0.4)',
             }}>
               Search Jobs
-            </Link>
-          </div>
+            </button>
+          </form>
 
           <p style={{ fontSize: 13, color: '#475569' }}>
             Popular: &nbsp;
             {['Software Engineering', 'Finance', 'Product Management', 'Data Science'].map((t, i) => (
-              <a key={t} href="#" style={{ color: '#34d399', textDecoration: 'none' }}>
+              <Link key={t} to={`/jobs?search=${encodeURIComponent(t)}`} style={{ color: '#34d399', textDecoration: 'none' }}>
                 {t}{i < 3 ? ' · ' : ''}
-              </a>
+              </Link>
             ))}
           </p>
         </div>
