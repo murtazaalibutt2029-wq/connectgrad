@@ -332,12 +332,11 @@ export default function SignupPage() {
 
               <form onSubmit={handleStep2}>
                 <div style={{ marginBottom: 14 }}>
-                  <SelectField
+                  <InputField
                     label="University / Institution"
                     value={form.university}
                     onChange={v => update('university', v)}
-                    options={universities}
-                    placeholder="Select your university"
+                    placeholder="e.g. LUMS, University of Manchester, MIT"
                     required
                   />
                 </div>

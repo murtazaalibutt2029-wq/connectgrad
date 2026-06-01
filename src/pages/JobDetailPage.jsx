@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import ApplyModal from '../components/ApplyModal'
 import {
   ArrowLeft, MapPin, DollarSign, Clock, Calendar, Briefcase,
   Sparkles, Copy, Download, Check, Loader, RotateCcw, ChevronRight, AlertCircle,
@@ -24,13 +25,14 @@ function CoverLetterGenerator({ job }) {
   const [apiError, setApiError] = useState('')
   const [form, setForm]         = useState({ name: '', university: '', degree: '', motivation: '' })
 
-  // Auto-fill from saved profile
+  // Auto-fill from saved profile — skip "Other" (legacy signup dropdown value)
   useEffect(() => {
     if (profile) {
+      const savedUni = profile.university !== 'Other' ? (profile.university || '') : ''
       setForm(prev => ({
         ...prev,
         name:       prev.name       || `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
-        university: prev.university || profile.university    || '',
+        university: prev.university || savedUni,
         degree:     prev.degree     || profile.field_of_study || '',
       }))
     }
@@ -48,7 +50,7 @@ function CoverLetterGenerator({ job }) {
       const res = await fetch('/api/generate-cover-letter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job, ...form, skills: profile?.skills || '' }),
+        body: JSON.stringify({ job, ...form, skills: profile?.skills || '', profile }),
       })
 
       const data = await res.json()
@@ -369,6 +371,8 @@ function Field({ label, value, onChange, placeholder }) {
 export default function JobDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { session } = useAuth()
+  const [showApplyModal, setShowApplyModal] = useState(false)
   const job = jobs.find(j => j.id === Number(id))
 
   if (!job) {
@@ -537,7 +541,7 @@ export default function JobDetailPage() {
             <div style={{ position: 'sticky', top: 86 }}>
               <CoverLetterGenerator job={job} />
 
-              {/* Apply now CTA */}
+              {/* Apply CTA */}
               <div style={{
                 marginTop: 16, padding: '18px 20px', borderRadius: 16,
                 background: 'rgba(255,255,255,0.02)',
@@ -546,22 +550,57 @@ export default function JobDetailPage() {
                 <p style={{ fontSize: 12, color: '#64748b', marginBottom: 12, textAlign: 'center' }}>
                   Deadline: <span style={{ color: '#f1f5f9', fontWeight: 600 }}>{job.deadline}</span>
                 </p>
-                <button style={{
-                  width: '100%', padding: '12px 0', borderRadius: 10,
-                  background: 'linear-gradient(135deg, #059669, #10b981)',
-                  border: 'none', cursor: 'pointer',
-                  color: 'white', fontSize: 14, fontWeight: 700,
-                  boxShadow: '0 0 20px rgba(16,185,129,0.3)',
-                }}>
-                  Apply on {job.company}'s site
-                </button>
+
+                {job.hostedOnConnectGrad ? (
+                  <>
+                    <button
+                      onClick={() => session ? setShowApplyModal(true) : navigate('/login')}
+                      style={{
+                        width: '100%', padding: '12px 0', borderRadius: 10,
+                        background: 'linear-gradient(135deg, #059669, #10b981)',
+                        border: 'none', cursor: 'pointer',
+                        color: 'white', fontSize: 14, fontWeight: 700,
+                        boxShadow: '0 0 20px rgba(16,185,129,0.3)',
+                      }}
+                    >
+                      Apply Now
+                    </button>
+                    {!session && (
+                      <p style={{ fontSize: 11, color: '#475569', textAlign: 'center', marginTop: 8 }}>
+                        You need to log in to apply
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <a
+                      href="#"
+                      style={{
+                        display: 'block', textAlign: 'center', padding: '12px 0', borderRadius: 10,
+                        background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
+                        color: '#94a3b8', fontSize: 13, textDecoration: 'none',
+                        marginBottom: 8,
+                      }}
+                    >
+                      View on {job.company}'s site →
+                    </a>
+                    <p style={{ fontSize: 11, color: '#475569', textAlign: 'center' }}>
+                      This role is hosted externally
+                    </p>
+                  </>
+                )}
+
                 <Link to="/jobs" style={{
-                  display: 'block', textAlign: 'center', marginTop: 10,
+                  display: 'block', textAlign: 'center', marginTop: 12,
                   fontSize: 13, color: '#64748b', textDecoration: 'none',
                 }}>
                   ← Back to all jobs
                 </Link>
               </div>
+
+              {showApplyModal && (
+                <ApplyModal job={job} onClose={() => setShowApplyModal(false)} />
+              )}
             </div>
           </div>
 

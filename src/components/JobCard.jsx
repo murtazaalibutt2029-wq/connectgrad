@@ -20,7 +20,10 @@ export default function JobCard({ job, selected = false, onToggle }) {
 
   return (
     <div
-      onClick={() => navigate(`/jobs/${job.id}`)}
+      onClick={e => {
+        if (e.target.closest('[data-checkbox]')) return
+        navigate(`/jobs/${job.id}`)
+      }}
       style={{
         background: baseBg,
         border: `1px solid ${baseBorder}`,
@@ -48,6 +51,7 @@ export default function JobCard({ job, selected = false, onToggle }) {
       {/* Checkbox */}
       {selectable && (
         <div
+          data-checkbox="true"
           onClick={e => { e.stopPropagation(); onToggle() }}
           style={{
             position: 'absolute', top: 14, left: 14,

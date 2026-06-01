@@ -11,6 +11,7 @@ import JobDetailPage from './pages/JobDetailPage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import MassApplyPage from './pages/MassApplyPage'
+import EmployerDashboard from './pages/EmployerDashboard'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/apply/review" element={<MassApplyPage />} />
+          <Route path="/employer/dashboard" element={<EmployerDashboard />} />
         </Routes>
       </main>
       <Footer />

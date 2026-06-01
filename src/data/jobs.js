@@ -14,12 +14,8 @@ export const jobs = [
     description: "Join Arbisoft's engineering team and work on real products used by millions. Ideal for final-year CS students.",
     region: 'Pakistan',
     featured: true,
-    requirements: {
-      coverLetter: true,
-      cv: true,
-      portfolio: false,
-      customQuestions: [],
-    },
+    hostedOnConnectGrad: true,
+    requirements: { coverLetter: true, cv: true, portfolio: false, customQuestions: [] },
   },
   {
     id: 2,
@@ -88,13 +84,8 @@ export const jobs = [
     description: "Systems Limited is Pakistan's largest IT company. Looking for fresh graduates with strong frontend skills.",
     region: 'Pakistan',
     featured: false,
-    requirements: {
-      coverLetter: true,
-      cv: true,
-      portfolio: true,
-      portfolioLabel: 'GitHub profile or portfolio website URL',
-      customQuestions: [],
-    },
+    hostedOnConnectGrad: true,
+    requirements: { coverLetter: true, cv: true, portfolio: true, portfolioLabel: 'GitHub profile or portfolio website URL', customQuestions: [] },
   },
   {
     id: 5,
@@ -209,13 +200,8 @@ export const jobs = [
     description: 'Netsol Technologies is seeking a UX Design Intern to help improve fintech products used globally.',
     region: 'Pakistan',
     featured: false,
-    requirements: {
-      coverLetter: true,
-      cv: true,
-      portfolio: true,
-      portfolioLabel: 'Figma portfolio or Behance/Dribbble link',
-      customQuestions: [],
-    },
+    hostedOnConnectGrad: true,
+    requirements: { coverLetter: true, cv: true, portfolio: true, portfolioLabel: 'Figma portfolio or Behance/Dribbble link', customQuestions: [] },
   },
 ]
 
