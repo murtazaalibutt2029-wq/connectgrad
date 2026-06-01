@@ -68,11 +68,30 @@ ${questionList}`,
       ],
     })
 
-    const answers = JSON.parse(message.content[0].text.trim())
+    const raw = message.content[0].text.trim()
+    const answers = extractJsonArray(raw)
     res.status(200).json({ answers })
   } catch (err) {
     console.error('Error generating answers:', err)
-    if (err instanceof SyntaxError) return res.status(500).json({ error: 'Failed to parse AI response. Please try again.' })
-    res.status(500).json({ error: 'Failed to generate answers. Please try again.' })
+    res.status(500).json({ error: err.message || 'Failed to generate answers. Please try again.' })
   }
+}
+
+function extractJsonArray(text) {
+  // Direct parse first
+  try { return JSON.parse(text) } catch {}
+
+  // Strip markdown code fences (```json ... ``` or ``` ... ```)
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/)
+  if (fenced) {
+    try { return JSON.parse(fenced[1].trim()) } catch {}
+  }
+
+  // Extract the first [...] block from the text
+  const arrayMatch = text.match(/\[[\s\S]*\]/)
+  if (arrayMatch) {
+    try { return JSON.parse(arrayMatch[0]) } catch {}
+  }
+
+  throw new Error('Could not parse AI response. Please retry.')
 }

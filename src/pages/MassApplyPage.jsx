@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   CheckCircle, Loader, AlertCircle, ChevronDown, ChevronUp,
   FileText, Upload, Link as LinkIcon, HelpCircle, Edit3,
-  Send, ArrowLeft, Sparkles, User,
+  Send, ArrowLeft, Sparkles, User, RotateCcw,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { addApplications } from '../utils/applications'
@@ -16,11 +16,12 @@ async function genLetter(job, profile) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       job,
-      name:       `${profile.first_name} ${profile.last_name}`.trim(),
-      university:  profile.university || '',
+      name:       `${profile.first_name || ''} ${profile.last_name || ''}`.trim(),
+      university:  profile.university !== 'Other' ? (profile.university || '') : '',
       degree:      profile.field_of_study || '',
-      motivation:  '',
+      motivation:  profile.career_goals || '',
       skills:      profile.skills || '',
+      profile,
     }),
   })
   const data = await res.json()
@@ -63,7 +64,7 @@ function StatusPill({ status }) {
 
 // ── individual job review card ────────────────────────────────────────────────
 
-function JobReviewCard({ item, index, onUpdate }) {
+function JobReviewCard({ item, index, onUpdate, onRetry }) {
   const [open, setOpen]   = useState(true)
   const [tab, setTab]     = useState('letter') // letter | custom
   const req = item.job.requirements || {}
@@ -76,12 +77,25 @@ function JobReviewCard({ item, index, onUpdate }) {
         border: '1px solid rgba(239,68,68,0.25)',
         background: 'rgba(239,68,68,0.05)', marginBottom: 16,
       }}>
-        <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <AlertCircle size={16} color="#f87171" />
-          <span style={{ fontSize: 14, fontWeight: 600, color: '#f87171' }}>
-            Failed to generate for {item.job.company} — {item.job.title}
-          </span>
-          <span style={{ fontSize: 12, color: '#64748b', marginLeft: 'auto' }}>{item.error}</span>
+        <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <AlertCircle size={16} color="#f87171" style={{ flexShrink: 0 }} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#f87171' }}>
+              {item.job.company} — {item.job.title}
+            </span>
+            <span style={{ display: 'block', fontSize: 12, color: '#64748b', marginTop: 2 }}>{item.error}</span>
+          </div>
+          <button
+            onClick={() => onRetry(item.job.id)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
+              background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)',
+              color: '#f87171', fontSize: 13, fontWeight: 600, flexShrink: 0,
+            }}
+          >
+            <RotateCcw size={12} /> Retry
+          </button>
         </div>
       </div>
     )
@@ -316,6 +330,25 @@ export default function MassApplyPage() {
     setItems(prev => prev.map(it => it.job.id === jobId ? { ...it, [field]: value } : it))
   }
 
+  const retryJob = async (jobId) => {
+    const jobItem = items.find(it => it.job.id === jobId)
+    if (!jobItem || !profile) return
+    setItems(prev => prev.map(it => it.job.id === jobId ? { ...it, status: 'generating', error: '' } : it))
+    try {
+      const [letter, answers] = await Promise.all([
+        genLetter(jobItem.job, profile),
+        genAnswers(jobItem.job, profile),
+      ])
+      setItems(prev => prev.map(it =>
+        it.job.id === jobId ? { ...it, status: 'done', coverLetter: letter, customAnswers: answers } : it
+      ))
+    } catch (err) {
+      setItems(prev => prev.map(it =>
+        it.job.id === jobId ? { ...it, status: 'error', error: err.message } : it
+      ))
+    }
+  }
+
   const handleSubmit = async () => {
     setPhase('submitting')
     const readyJobs = items.filter(it => it.status === 'done').map(it => it.job)
@@ -437,7 +470,7 @@ export default function MassApplyPage() {
 
         {/* Job cards */}
         {items.map((item, i) => (
-          <JobReviewCard key={item.job.id} item={item} index={i} onUpdate={updateItem} />
+          <JobReviewCard key={item.job.id} item={item} index={i} onUpdate={updateItem} onRetry={retryJob} />
         ))}
       </div>
 

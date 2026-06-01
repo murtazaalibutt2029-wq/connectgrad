@@ -50,10 +50,12 @@ export default function JobsPage() {
     setTimeout(() => setToast(null), 3500)
   }
 
-  const handleMassApply = () => {
+  const handleMassApply = (e) => {
+    e.stopPropagation()
     const selected = jobs.filter(j => selectedIds.has(j.id))
-    setSelectedIds(new Set())
+    if (!selected.length) return
     navigate('/apply/review', { state: { jobs: selected } })
+    setSelectedIds(new Set())
   }
 
   const allVisibleSelected = filtered.length > 0 && filtered.every(j => selectedIds.has(j.id))
@@ -282,6 +284,7 @@ export default function JobsPage() {
           </button>
           <button
             onClick={handleMassApply}
+            onMouseDown={e => e.stopPropagation()}
             style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '10px 22px', borderRadius: 10,
