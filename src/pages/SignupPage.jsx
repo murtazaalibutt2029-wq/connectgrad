@@ -259,7 +259,7 @@ export default function SignupPage() {
               <h2 style={{ fontSize: 26, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Create your account</h2>
               <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32 }}>
                 Already have an account?{' '}
-                <Link to="#" style={{ color: '#10b981', textDecoration: 'none' }}>Log in</Link>
+                <Link to="/login" style={{ color: '#10b981', textDecoration: 'none' }}>Log in</Link>
               </p>
 
               <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>

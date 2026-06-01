@@ -71,7 +71,7 @@ export default function Navbar() {
             }}>
               <LayoutDashboard size={14} /> Tracker
             </Link>
-            <Link to="/signup" style={{
+            <Link to="/login" style={{
               padding: '8px 18px', borderRadius: 8, fontSize: 14, fontWeight: 500,
               textDecoration: 'none', color: '#94a3b8',
               border: '1px solid rgba(148,163,184,0.2)',

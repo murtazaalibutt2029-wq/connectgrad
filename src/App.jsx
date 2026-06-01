@@ -8,6 +8,7 @@ import EmployersPage from './pages/EmployersPage'
 import ResourcesPage from './pages/ResourcesPage'
 import TrackerPage from './pages/TrackerPage'
 import JobDetailPage from './pages/JobDetailPage'
+import LoginPage from './pages/LoginPage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/jobs/:id" element={<JobDetailPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </main>
       <Footer />
