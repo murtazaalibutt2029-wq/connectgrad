@@ -5,11 +5,17 @@ import { useAuth } from '../context/AuthContext'
 
 export default function ApplyModal({ job, onClose }) {
   const { session, profile } = useAuth()
-  const [stage, setStage]     = useState('generating') // generating | ready | uploading | success | error
-  const [letter, setLetter]   = useState('')
-  const [cvFile, setCvFile]   = useState(null)
-  const [error, setError]     = useState('')
-  const fileRef               = useRef()
+  const [stage, setStage]           = useState('generating') // generating | ready | uploading | success | error
+  const [letter, setLetter]         = useState('')
+  const [cvFile, setCvFile]         = useState(null)         // new file override
+  const [useProfileResume, setUseProfileResume] = useState(false) // tracks whether to use saved resume
+  const [error, setError]           = useState('')
+  const fileRef                     = useRef()
+
+  // Initialise CV state once profile loads
+  useEffect(() => {
+    if (profile?.resume_url) setUseProfileResume(true)
+  }, [profile?.resume_url])
 
   useEffect(() => {
     if (!profile) return
@@ -48,7 +54,10 @@ export default function ApplyModal({ job, onClose }) {
     try {
       let cvUrl = null
 
-      if (cvFile) {
+      if (useProfileResume && profile?.resume_url) {
+        // Use the resume already saved in their profile — no re-upload needed
+        cvUrl = profile.resume_url
+      } else if (cvFile) {
         const path = `${session.user.id}/${job.id}-${Date.now()}.pdf`
         const { error: uploadErr } = await supabase.storage
           .from('cvs').upload(path, cvFile, { contentType: 'application/pdf' })
@@ -193,20 +202,50 @@ export default function ApplyModal({ job, onClose }) {
                 />
               </div>
 
-              {/* CV upload */}
+              {/* CV / Resume */}
               <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>CV / Resume <span style={{ color: '#475569', fontWeight: 400 }}>(PDF, optional)</span></label>
-                <input ref={fileRef} type="file" accept=".pdf" onChange={e => setCvFile(e.target.files[0] || null)} style={{ display: 'none' }} />
-                {cvFile ? (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                    <FileText size={14} color="#10b981" />
-                    <span style={{ fontSize: 13, color: '#34d399', flex: 1 }}>{cvFile.name}</span>
-                    <button type="button" onClick={() => setCvFile(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex' }}><X size={13} /></button>
+                <label style={labelStyle}>CV / Resume</label>
+                <input ref={fileRef} type="file" accept=".pdf" onChange={e => { setCvFile(e.target.files[0] || null); setUseProfileResume(false) }} style={{ display: 'none' }} />
+
+                {/* Using saved profile resume */}
+                {useProfileResume && profile?.resume_url && !cvFile && (
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', marginBottom: 8 }}>
+                      <FileText size={14} color="#10b981" />
+                      <span style={{ fontSize: 13, color: '#34d399', flex: 1 }}>Using your saved resume</span>
+                      <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#64748b', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <ExternalLink size={10} /> View
+                      </a>
+                    </div>
+                    <button type="button" onClick={() => { setUseProfileResume(false); fileRef.current.click() }} style={{ fontSize: 12, color: '#475569', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>
+                      Use a different CV for this job
+                    </button>
                   </div>
-                ) : (
-                  <button type="button" onClick={() => fileRef.current.click()} style={{ width: '100%', padding: '12px', borderRadius: 9, background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.12)', color: '#64748b', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-                    <Upload size={14} /> Upload your CV (PDF)
-                  </button>
+                )}
+
+                {/* New file selected */}
+                {cvFile && (
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', marginBottom: 8 }}>
+                      <FileText size={14} color="#7dd3fc" />
+                      <span style={{ fontSize: 13, color: '#7dd3fc', flex: 1 }}>{cvFile.name}</span>
+                      <button type="button" onClick={() => { setCvFile(null); if (profile?.resume_url) setUseProfileResume(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex' }}><X size={13} /></button>
+                    </div>
+                  </div>
+                )}
+
+                {/* No resume */}
+                {!useProfileResume && !cvFile && (
+                  <div>
+                    <button type="button" onClick={() => fileRef.current.click()} style={{ width: '100%', padding: '12px', borderRadius: 9, background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.12)', color: '#64748b', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                      <Upload size={14} /> Upload CV (PDF)
+                    </button>
+                    {!profile?.resume_url && (
+                      <p style={{ fontSize: 11, color: '#475569', marginTop: 6 }}>
+                        Save a resume on your <a href="/profile" style={{ color: '#64748b' }}>profile</a> to skip this step every time.
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
             </>

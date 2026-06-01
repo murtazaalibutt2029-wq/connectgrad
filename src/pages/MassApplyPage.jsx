@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { addApplications } from '../utils/applications'
+import { supabase } from '../lib/supabase'
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -150,7 +151,7 @@ function JobReviewCard({ item, index, onUpdate, onRetry }) {
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               <ReqChip icon={FileText} label="Cover Letter" done />
-              <ReqChip icon={Upload} label="CV / Resume" done={false} note="Upload before submitting" />
+              <ReqChip icon={Upload} label="CV / Resume" done={!!item.cvUrl} />
               {req.portfolio && (
                 <ReqChip icon={LinkIcon} label="Portfolio" done={!!item.portfolioUrl} />
               )}
@@ -158,6 +159,25 @@ function JobReviewCard({ item, index, onUpdate, onRetry }) {
                 <ReqChip icon={HelpCircle} label={`${req.customQuestions.length} Custom Q${req.customQuestions.length > 1 ? 's' : ''}`} done />
               )}
             </div>
+          </div>
+
+          {/* CV status */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={labelStyle}>CV / Resume</label>
+            {item.cvUrl ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                <FileText size={14} color="#10b981" />
+                <span style={{ fontSize: 13, color: '#34d399', flex: 1 }}>Resume attached</span>
+                <a href={item.cvUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#64748b', textDecoration: 'none' }}>View</a>
+                <button type="button" onClick={() => onUpdate(item.job.id, 'cvUrl', '')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex', fontSize: 11 }}>
+                  Change
+                </button>
+              </div>
+            ) : (
+              <div style={{ padding: '10px 14px', borderRadius: 9, background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)', fontSize: 13, color: '#fcd34d' }}>
+                No resume attached — save one to your <a href="/profile" style={{ color: '#f59e0b' }}>profile</a> to auto-populate.
+              </div>
+            )}
           </div>
 
           {/* Portfolio link input */}
@@ -282,10 +302,18 @@ export default function MassApplyPage() {
       coverLetter:   '',
       customAnswers: [],
       portfolioUrl:  '',
+      cvUrl:         '',   // seeded from profile.resume_url once profile loads
       error:         '',
     }))
   )
   const [phase, setPhase] = useState('generating') // generating | review | submitting | done
+
+  // Seed cvUrl from profile resume once available
+  useEffect(() => {
+    if (profile?.resume_url) {
+      setItems(prev => prev.map(it => ({ ...it, cvUrl: it.cvUrl || profile.resume_url })))
+    }
+  }, [profile?.resume_url])
 
   useEffect(() => {
     if (!authLoading && !session) navigate('/login')
@@ -351,9 +379,29 @@ export default function MassApplyPage() {
 
   const handleSubmit = async () => {
     setPhase('submitting')
-    const readyJobs = items.filter(it => it.status === 'done').map(it => it.job)
-    addApplications(readyJobs)
-    setTimeout(() => navigate('/tracker'), 800)
+    const readyItems = items.filter(it => it.status === 'done')
+
+    // Save to Supabase applications table
+    if (session) {
+      await Promise.allSettled(readyItems.map(it =>
+        supabase.from('applications').insert({
+          user_id:              session.user.id,
+          job_id:               it.job.id,
+          job_title:            it.job.title,
+          company:              it.job.company,
+          cover_letter:         it.coverLetter,
+          cv_url:               it.cvUrl || profile?.resume_url || null,
+          status:               'pending',
+          applicant_name:       `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim(),
+          applicant_university: profile?.university !== 'Other' ? (profile?.university || '') : '',
+          applicant_degree:     profile?.field_of_study || '',
+        })
+      ))
+    }
+
+    // Also track locally in the applications tracker
+    addApplications(readyItems.map(it => it.job))
+    navigate('/tracker')
   }
 
   const doneCount  = items.filter(i => i.status === 'done').length
