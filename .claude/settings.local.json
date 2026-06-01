@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl *)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(node -e \"const l = require\\('./node_modules/lucide-react'\\); const icons = ['Instagram','Twitter','Linkedin','Mail','DollarSign','SlidersHorizontal','ChevronDown']; icons.forEach\\(i => console.log\\(i, !!l[i]\\)\\)\")",
+      "Bash(node --input-type=module)"
+    ]
+  }
+}
