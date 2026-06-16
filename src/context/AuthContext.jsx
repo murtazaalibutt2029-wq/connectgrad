@@ -43,9 +43,12 @@ export function AuthProvider({ children }) {
   }, [])
 
   const refreshProfile = () => session?.user && fetchProfile(session.user.id)
+  const refreshEmployerStatus = async () => {
+    if (session?.user) await fetchEmployerStatus(session.user.id)
+  }
 
   return (
-    <AuthContext.Provider value={{ session, profile, isEmployer, loading, refreshProfile }}>
+    <AuthContext.Provider value={{ session, profile, isEmployer, loading, refreshProfile, refreshEmployerStatus }}>
       {children}
     </AuthContext.Provider>
   )

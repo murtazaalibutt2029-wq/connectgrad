@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, Briefcase, Building2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
 
 const industries = [
   'Technology', 'Finance', 'Consulting', 'Healthcare', 'Education',
@@ -10,6 +11,7 @@ const industries = [
 
 export default function EmployerSignupPage() {
   const navigate = useNavigate()
+  const { refreshEmployerStatus } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -42,7 +44,7 @@ export default function EmployerSignupPage() {
       const { error: profileError } = await supabase
         .from('employer_profiles')
         .insert({
-          id: data.user.id,
+          user_id: data.user.id,
           company_name: form.companyName,
           company_size: form.companySize,
           industry: form.industry,
@@ -51,6 +53,7 @@ export default function EmployerSignupPage() {
           email: form.email,
         })
       if (profileError) throw profileError
+      await refreshEmployerStatus()
       setSubmitted(true)
     } catch (err) {
       console.error('Employer signup failed', err)
