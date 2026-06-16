@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   CheckCircle, Loader, AlertCircle, ChevronDown, ChevronUp,
   FileText, Upload, Link as LinkIcon, HelpCircle, Edit3,
@@ -69,7 +69,7 @@ function StatusPill({ status }) {
 
 // ── individual job review card ────────────────────────────────────────────────
 
-function JobReviewCard({ item, index, onUpdate, onRetry }) {
+function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
   const [open, setOpen]   = useState(true)
   const [tab, setTab]     = useState('letter') // letter | custom
   const req = item.job.requirements || {}
@@ -95,7 +95,7 @@ function JobReviewCard({ item, index, onUpdate, onRetry }) {
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
-              background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)',
+              background: 'rgba(239,68,68,0.12)',
               color: '#f87171', fontSize: 13, fontWeight: 600, flexShrink: 0,
             }}
           >
@@ -168,20 +168,34 @@ function JobReviewCard({ item, index, onUpdate, onRetry }) {
           {/* CV status */}
           <div style={{ marginBottom: 20 }}>
             <label style={labelStyle}>CV / Resume</label>
-            {item.cvUrl ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                <FileText size={14} color="#10b981" />
-                <span style={{ fontSize: 13, color: '#34d399', flex: 1 }}>Resume attached</span>
-                <a href={item.cvUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#64748b', textDecoration: 'none' }}>View</a>
-                <button type="button" onClick={() => onUpdate(item.job.id, 'cvUrl', '')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex', fontSize: 11 }}>
-                  Change
+            <div style={{ display: 'grid', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 14px', borderRadius: 9, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, overflow: 'hidden' }}>
+                  <FileText size={14} color={item.cvUrl ? '#10b981' : '#f59e0b'} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 13, color: item.cvUrl ? '#f1f5f9' : '#fcd34d', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {item.cvFileName || (item.cvUrl ? 'Profile resume' : 'No resume attached')}
+                    </div>
+                    <div style={{ fontSize: 11, color: '#94a3b8' }}>{item.cvUrl ? 'Attached' : 'Upload a resume to include with this application.'}</div>
+                  </div>
+                </div>
+                <button type="button" onClick={() => document.getElementById(`cv-upload-${item.job.id}`)?.click()} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: 'rgba(16,185,129,0.14)', color: '#10b981', fontSize: 12, cursor: 'pointer' }}>
+                  {item.cvUrl ? 'Replace' : 'Upload'}
                 </button>
               </div>
-            ) : (
-              <div style={{ padding: '10px 14px', borderRadius: 9, background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)', fontSize: 13, color: '#fcd34d' }}>
-                No resume attached — save one to your <a href="/profile" style={{ color: '#f59e0b' }}>profile</a> to auto-populate.
-              </div>
-            )}
+              <input
+                id={`cv-upload-${item.job.id}`}
+                type="file"
+                accept=".pdf,.doc,.docx"
+                style={{ display: 'none' }}
+                onChange={async e => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  e.target.value = ''
+                  await onUpload(item.job.id, file)
+                }}
+              />
+            </div>
           </div>
 
           {/* Portfolio link input */}
@@ -297,7 +311,7 @@ export default function MassApplyPage() {
   const navigate  = useNavigate()
   const started   = useRef(false)
 
-  const selectedJobs = location.state?.jobs || []
+  const selectedJobs = useMemo(() => location.state?.jobs || [], [location.state?.jobs])
 
   const [items, setItems] = useState(
     selectedJobs.map(job => ({
@@ -307,6 +321,7 @@ export default function MassApplyPage() {
       customAnswers: [],
       portfolioUrl:  '',
       cvUrl:         '',   // seeded from profile.resume_url once profile loads
+      cvFileName:    '',
       error:         '',
     }))
   )
@@ -315,17 +330,21 @@ export default function MassApplyPage() {
   // Seed cvUrl from profile resume once available
   useEffect(() => {
     if (profile?.resume_url) {
-      setItems(prev => prev.map(it => ({ ...it, cvUrl: it.cvUrl || profile.resume_url })))
+      setItems(prev => prev.map(it => ({
+        ...it,
+        cvUrl: it.cvUrl || profile.resume_url,
+        cvFileName: it.cvFileName || 'Profile resume',
+      })))
     }
   }, [profile?.resume_url])
 
   useEffect(() => {
     if (!authLoading && !session) navigate('/login')
-  }, [session, authLoading])
+  }, [session, authLoading, navigate])
 
   useEffect(() => {
     if (!authLoading && !selectedJobs.length) navigate('/jobs')
-  }, [authLoading])
+  }, [authLoading, navigate, selectedJobs.length])
 
   // Start generation once profile is available
   useEffect(() => {
@@ -356,10 +375,25 @@ export default function MassApplyPage() {
     }
 
     generate()
-  }, [authLoading, profile])
+  }, [authLoading, profile, selectedJobs])
 
   const updateItem = (jobId, field, value) => {
     setItems(prev => prev.map(it => it.job.id === jobId ? { ...it, [field]: value } : it))
+  }
+
+  const uploadCvFile = async (jobId, file) => {
+    if (!session || !file) return
+    const path = `${session.user.id}/applications/${jobId}/cv_${Date.now()}_${file.name}`
+    const { error: uploadError } = await supabase.storage.from('cvs').upload(path, file, { contentType: file.type, upsert: true })
+    if (uploadError) {
+      console.error(uploadError)
+      return
+    }
+    const { data } = supabase.storage.from('cvs').getPublicUrl(path)
+    if (data?.publicUrl) {
+      updateItem(jobId, 'cvUrl', data.publicUrl)
+      updateItem(jobId, 'cvFileName', file.name)
+    }
   }
 
   const retryJob = async (jobId) => {
@@ -410,7 +444,6 @@ export default function MassApplyPage() {
 
   const doneCount  = items.filter(i => i.status === 'done').length
   const totalCount = items.length
-  const allDone    = doneCount === totalCount
 
   if (authLoading || !profile) return (
     <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -522,7 +555,7 @@ export default function MassApplyPage() {
 
         {/* Job cards */}
         {items.map((item, i) => (
-          <JobReviewCard key={item.job.id} item={item} index={i} onUpdate={updateItem} onRetry={retryJob} />
+          <JobReviewCard key={item.job.id} item={item} index={i} onUpdate={updateItem} onRetry={retryJob} onUpload={uploadCvFile} />
         ))}
       </div>
 

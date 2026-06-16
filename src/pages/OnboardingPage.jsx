@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle, Upload, Sparkles, Loader, ArrowRight } from 'lucide-react'
+import { CheckCircle, Upload } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import PhoneInput from 'react-phone-number-input'
@@ -21,16 +21,20 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     if (!loading && !session) navigate('/login')
-  }, [loading, session])
+  }, [loading, session, navigate])
 
   useEffect(() => {
     if (!profile) return
-    setResumeUrl(profile.resume_url || '')
-    setForm({
-      phone: profile.phone || '',
-      bio: profile.bio || '',
-      skills: profile.skills || '',
-    })
+    const timer = window.setTimeout(() => {
+      setResumeUrl(profile.resume_url || '')
+      setForm({
+        phone: profile.phone || '',
+        bio: profile.bio || '',
+        skills: profile.skills || '',
+      })
+    }, 0)
+
+    return () => window.clearTimeout(timer)
   }, [profile])
 
   const update = (key, value) => setForm(prev => ({ ...prev, [key]: value }))
@@ -200,7 +204,7 @@ export default function OnboardingPage() {
               )}
               {step < 3 ? (
                 <button type="button" onClick={() => step === 1 ? setStep(2) : handleSaveProfile()} style={{ flex: '1', padding: '13px 0', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-                  {step === 1 ? 'Skip to profile' : saving ? 'Saving…' : 'Save and continue'}
+                  {step === 1 ? (resumeUrl || resumeStatus === 'done' ? 'Continue →' : 'Skip to profile') : saving ? 'Saving…' : 'Save and continue'}
                 </button>
               ) : (
                 <button type="button" onClick={() => navigate('/jobs')} style={{ flex: '1', padding: '13px 0', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer' }}>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { X, Search } from 'lucide-react'
 import { commonSkills } from '../utils/skills'
 
@@ -11,6 +11,8 @@ const pillStyle = {
 
 export default function SkillPicker({ label, value, onChange, placeholder, required }) {
   const [query, setQuery] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef(null)
   const selected = useMemo(
     () => value.split(',').map(s => s.trim()).filter(Boolean),
     [value],
@@ -33,6 +35,7 @@ export default function SkillPicker({ label, value, onChange, placeholder, requi
     const next = [...selected, tag]
     updateValue(next)
     setQuery('')
+    setIsOpen(false)
   }
 
   const removeTag = tag => {
@@ -47,8 +50,27 @@ export default function SkillPicker({ label, value, onChange, placeholder, requi
     }
   }
 
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpen(false)
+      }
+    }
+    const handleKeyDown = e => {
+      if (e.key === 'Escape') setIsOpen(false)
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
   return (
-    <div style={{ position: 'relative' }}>
+    <div ref={containerRef} style={{ position: 'relative' }}>
       <label style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', display: 'block', marginBottom: 7 }}>
         {label}
       </label>
@@ -62,9 +84,10 @@ export default function SkillPicker({ label, value, onChange, placeholder, requi
               </button>
             </div>
           ))}
-          <input
+              <input
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={e => { setQuery(e.target.value); setIsOpen(true) }}
+            onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             style={{
@@ -78,7 +101,7 @@ export default function SkillPicker({ label, value, onChange, placeholder, requi
         <Search size={14} />
         <span style={{ fontSize: 11 }}>Search skills</span>
       </div>
-      {suggestions.length > 0 && (
+      {isOpen && suggestions.length > 0 && (
         <div style={{ position: 'absolute', left: 0, right: 0, top: '100%', marginTop: 8, zIndex: 10, borderRadius: 14, background: '#0d1f4f', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 16px 40px rgba(0,0,0,0.25)', maxHeight: 240, overflowY: 'auto' }}>
           {suggestions.map(skill => (
             <button

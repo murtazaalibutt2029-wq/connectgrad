@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Loader, Download, ChevronDown, ChevronUp, User, Briefcase, FileText, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { Loader, Download, ChevronDown, ChevronUp, User, Briefcase, FileText, CheckCircle, XCircle, Clock, PlusCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
@@ -118,18 +118,27 @@ function ApplicationCard({ app, onStatusChange }) {
 export default function EmployerDashboard() {
   const { session, loading } = useAuth()
   const navigate = useNavigate()
-  const [apps, setApps]       = useState([])
+  const [apps, setApps]         = useState([])
+  const [postedJobs, setPostedJobs] = useState([])
   const [fetching, setFetching] = useState(true)
-  const [filter, setFilter]   = useState('all')
+  const [filter, setFilter]     = useState('all')
 
   useEffect(() => { if (!loading && !session) navigate('/login') }, [session, loading])
 
   useEffect(() => {
     if (!session) return
-    supabase.from('applications')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => { setApps(data || []); setFetching(false) })
+    const fetchEmployerData = async () => {
+      const [applicationsRes, jobsRes] = await Promise.all([
+        supabase.from('applications').select('*').order('created_at', { ascending: false }),
+        supabase.from('jobs').select('*').eq('employer_id', session.user.id).order('created_at', { ascending: false }),
+      ])
+
+      setApps(applicationsRes.data || [])
+      setPostedJobs(jobsRes.data || [])
+      setFetching(false)
+    }
+
+    fetchEmployerData()
   }, [session])
 
   const updateStatus = async (id, status) => {
@@ -158,10 +167,64 @@ export default function EmployerDashboard() {
       {/* Header */}
       <div style={{ background: 'linear-gradient(180deg, #071230 0%, #030a1a 100%)', padding: '48px 24px 40px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Employer Portal</p>
-          <h1 style={{ fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.8px', marginBottom: 28 }}>
-            Applications Dashboard
-          </h1>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
+            <div>
+              <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Employer Portal</p>
+              <h1 style={{ fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.8px', marginBottom: 14 }}>
+                Applications Dashboard
+              </h1>
+              <p style={{ fontSize: 15, color: '#94a3b8', maxWidth: 640 }}>Your job posting flow should feel fast, polished, and rewarding. Keep top graduate talent engaged and manage their applications from a single dashboard.</p>
+            </div>
+            <button
+              onClick={() => navigate('/employer/post-job')}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                padding: '14px 22px', borderRadius: 14, border: 'none', cursor: 'pointer',
+                background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontSize: 15, fontWeight: 700,
+                boxShadow: '0 18px 40px rgba(16,185,129,0.18)',
+              }}
+            >
+              <Briefcase size={16} /> Post a job
+            </button>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16, marginTop: 28 }}>
+            <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ fontSize: 12, color: '#64748b', marginBottom: 8 }}>Active postings</p>
+              <p style={{ fontSize: 32, fontWeight: 800, color: '#f1f5f9' }}>{postedJobs.length}</p>
+            </div>
+            <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ fontSize: 12, color: '#64748b', marginBottom: 8 }}>New applicants</p>
+              <p style={{ fontSize: 32, fontWeight: 800, color: '#f1f5f9' }}>{apps.length}</p>
+            </div>
+            <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ fontSize: 12, color: '#64748b', marginBottom: 8 }}>Live roles</p>
+              <p style={{ fontSize: 32, fontWeight: 800, color: '#f1f5f9' }}>{postedJobs.filter(job => !job.is_external).length}</p>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 26, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Why post here?</p>
+              <ul style={{ listStyle: 'inside disc', color: '#94a3b8', lineHeight: 1.8, margin: 0, paddingLeft: 12 }}>
+                <li>Attract motivated graduates in Pakistan, UK, USA and Europe.</li>
+                <li>Receive applications from candidates with polished profiles and AI-generated letters.</li>
+                <li>Keep the entire hiring pipeline visible inside ConnectGrad.</li>
+              </ul>
+            </div>
+            <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Latest job preview</p>
+              {postedJobs[0] ? (
+                <div>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>{postedJobs[0].title}</p>
+                  <p style={{ fontSize: 13, color: '#64748b', marginBottom: 10 }}>{postedJobs[0].company} · {postedJobs[0].region}</p>
+                  <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>{postedJobs[0].description.slice(0, 120)}{postedJobs[0].description.length > 120 ? '…' : ''}</p>
+                </div>
+              ) : (
+                <p style={{ fontSize: 13, color: '#64748b' }}>No jobs posted yet. Create your first role to start receiving qualified applicants.</p>
+              )}
+            </div>
+          </div>
 
           {/* Stat chips */}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
