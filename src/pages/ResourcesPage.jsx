@@ -15,35 +15,35 @@ const resources = [
     title: 'Cover Letters That Recruiters Actually Read',
     category: 'CV & Cover Letters',
     summary: 'How to write a cover letter that highlights your motivation, skills, and culture fit without sounding generic.',
-    details: `A compelling cover letter is not just a restatement of your CV — it is your first opportunity to show why you belong in the team. This resource explains how to structure a cover letter into three strong paragraphs: opening with the role and why it excites you, linking your most relevant experience to the job, and closing with a confident but polite call to action. It includes templates designed for internship applications, graduate schemes, and early career jobs. You will also learn how to cite company values, use keywords from the job description, and avoid common mistakes such as vague language or overly formal phrasing. There is a focus on how to write for different employer types, from startups and consultancies to banks and product teams. The guide also shares a quick edit checklist for tone, grammar, and formatting so your letter can stand out without wasting the recruiter’s time.`,
+    details: `A compelling cover letter is not just a restatement of your CV - it is your first opportunity to show why you belong in the team. This resource explains how to structure a cover letter into three strong paragraphs: opening with the role and why it excites you, linking your most relevant experience to the job, and closing with a confident but polite call to action. It includes templates designed for internship applications, graduate schemes, and early career jobs. You will also learn how to cite company values, use keywords from the job description, and avoid common mistakes such as vague language or overly formal phrasing. There is a focus on how to write for different employer types, from startups and consultancies to banks and product teams. The guide also shares a quick edit checklist for tone, grammar, and formatting so your letter can stand out without wasting the recruiter's time.`,
   },
   {
     id: 3,
     title: 'LinkedIn Profile Optimisation for Students',
     category: 'Networking',
     summary: 'Step-by-step LinkedIn improvements to help your profile become discoverable, professional, and recruiter-friendly.',
-    details: `LinkedIn is one of the most important career tools for students entering the job market. This resource explains how to optimise every section of your profile, from headline and summary to experience and skills endorsements. You will learn how to write a headline that balances your current status with your target role, and how to craft a profile summary that reads like a mini personal brand statement. There is specific guidance on adding projects, volunteering, and campus leadership in a way that shows impact. The guide also covers connection strategy — who to reach out to, how to send messages that are respectful and meaningful, and how to use alumni and university networks without sounding spammy. It includes practical examples for both local and international students, plus a simple weekly routine for keeping your profile active and visible.`,
+    details: `LinkedIn is one of the most important career tools for students entering the job market. This resource explains how to optimise every section of your profile, from headline and summary to experience and skills endorsements. You will learn how to write a headline that balances your current status with your target role, and how to craft a profile summary that reads like a mini personal brand statement. There is specific guidance on adding projects, volunteering, and campus leadership in a way that shows impact. The guide also covers connection strategy - who to reach out to, how to send messages that are respectful and meaningful, and how to use alumni and university networks without sounding spammy. It includes practical examples for both local and international students, plus a simple weekly routine for keeping your profile active and visible.`,
   },
   {
     id: 4,
     title: 'Preparing for Technical Interviews',
     category: 'Interview Prep',
     summary: 'A complete roadmap for coding interview preparation that combines fundamentals, practice, and review cycles.',
-    details: `Technical interview preparation is more than solving problems; it is about building confidence and developing a repeatable process. This guide covers the core topics you need to master — data structures, algorithms, problem-solving patterns, and time management. It explains how to choose the right resources, how to practice with feedback, and how to turn every session into a learning opportunity. There are sections on how to read a problem statement carefully, how to write pseudocode before coding, and how to communicate your thinking clearly to an interviewer. The resource also includes a study plan for the weeks leading up to a coding interview, with a balanced mix of easy, medium, and hard problems. Whether you are applying to a software engineering internship or a graduate developer programme, this guide helps you prepare systematically and avoid last-minute panic.`,
+    details: `Technical interview preparation is more than solving problems; it is about building confidence and developing a repeatable process. This guide covers the core topics you need to master - data structures, algorithms, problem-solving patterns, and time management. It explains how to choose the right resources, how to practice with feedback, and how to turn every session into a learning opportunity. There are sections on how to read a problem statement carefully, how to write pseudocode before coding, and how to communicate your thinking clearly to an interviewer. The resource also includes a study plan for the weeks leading up to a coding interview, with a balanced mix of easy, medium, and hard problems. Whether you are applying to a software engineering internship or a graduate developer programme, this guide helps you prepare systematically and avoid last-minute panic.`,
   },
   {
     id: 5,
     title: 'STAR Method for Interview Answers',
     category: 'Interview Prep',
     summary: 'A detailed walkthrough of STAR answers for behavioural questions, with examples for teamwork, leadership, and problem solving.',
-    details: `Behavioural interviews are a chance to prove your soft skills with concrete examples. This resource breaks down the STAR method — Situation, Task, Action, Result — and shows how to use it to tell stories that feel structured yet natural. You will find templates for common questions like “Tell me about a time you showed leadership” and “Describe a challenge you overcame.” The guide also helps you choose the right experiences from coursework, internships, volunteer work, and extracurricular activities. It emphasises the importance of measurable results, how to avoid vague language, and how to keep your answers under two minutes. There is also advice on how to handle follow-up questions, how to remain humble while highlighting your contribution, and how to practise using a mentor, peer, or recording tool.`,
+    details: `Behavioural interviews are a chance to prove your soft skills with concrete examples. This resource breaks down the STAR method - Situation, Task, Action, Result - and shows how to use it to tell stories that feel structured yet natural. You will find templates for common questions like "Tell me about a time you showed leadership" and "Describe a challenge you overcame." The guide also helps you choose the right experiences from coursework, internships, volunteer work, and extracurricular activities. It emphasises the importance of measurable results, how to avoid vague language, and how to keep your answers under two minutes. There is also advice on how to handle follow-up questions, how to remain humble while highlighting your contribution, and how to practise using a mentor, peer, or recording tool.`,
   },
   {
     id: 6,
     title: 'Interview Preparation Checklist',
     category: 'Interview Prep',
     summary: 'A 12-point checklist to prepare for every interview, from research and technical practice to logistics and follow-up.',
-    details: `A strong interview performance is built on preparation and polish. This checklist walks you through everything you should do before, during, and after an interview. It starts with researching the company’s mission, products, and recent news. Then it moves to role-specific preparation such as reviewing job responsibilities, practising example questions, and rehearsing your personal pitch. The guide also covers non-technical factors like choosing the right outfit, testing your audio and video setup for remote interviews, and arriving early for in-person meetings. After the interview, it explains how to send a concise thank-you note, reflect on what went well, and update your tracker. The checklist is designed to be reusable for multiple rounds and different employers, helping you stay organised as applications pile up.`,
+    details: `A strong interview performance is built on preparation and polish. This checklist walks you through everything you should do before, during, and after an interview. It starts with researching the company's mission, products, and recent news. Then it moves to role-specific preparation such as reviewing job responsibilities, practising example questions, and rehearsing your personal pitch. The guide also covers non-technical factors like choosing the right outfit, testing your audio and video setup for remote interviews, and arriving early for in-person meetings. After the interview, it explains how to send a concise thank-you note, reflect on what went well, and update your tracker. The checklist is designed to be reusable for multiple rounds and different employers, helping you stay organised as applications pile up.`,
   },
   {
     id: 7,
@@ -57,21 +57,21 @@ const resources = [
     title: 'Offer Evaluation Worksheet',
     category: 'Salary Benchmarks',
     summary: 'A practical worksheet for comparing two or more offers on salary, training, culture, and growth potential.',
-    details: `Not all offers are equal — this worksheet helps you compare them side by side. It takes you through the key criteria that matter beyond pay, including learning opportunities, promotion pace, mentorship, commute, remote flexibility, and company stability. The guide shows how to assign relative importance to each factor so you can make a decision that feels right for your career, not just your paycheck. There is also specific advice for international students and early career candidates, such as visa sponsorship, relocation support, and cultural fit in a new market. By the end of the worksheet, you will have a clear, written view of the trade-offs for each role, which makes it easier to choose with confidence and negotiate from a place of strength.`,
+    details: `Not all offers are equal - this worksheet helps you compare them side by side. It takes you through the key criteria that matter beyond pay, including learning opportunities, promotion pace, mentorship, commute, remote flexibility, and company stability. The guide shows how to assign relative importance to each factor so you can make a decision that feels right for your career, not just your paycheck. There is also specific advice for international students and early career candidates, such as visa sponsorship, relocation support, and cultural fit in a new market. By the end of the worksheet, you will have a clear, written view of the trade-offs for each role, which makes it easier to choose with confidence and negotiate from a place of strength.`,
   },
   {
     id: 9,
     title: 'Networking for Referrals and Mentors',
     category: 'Networking',
     summary: 'A networking playbook that helps students build meaningful connections without feeling insincere.',
-    details: `Networking is a skill, not a personality trait. This guide helps you build relationships that are both useful and genuine. It starts with identifying the right people: alumni, professors, recruiters, and peers in your target field. Then it explains how to craft short, respectful outreach messages that introduce yourself, explain your interest, and request a specific next step. The resource also covers how to maintain momentum after an initial meeting, how to ask for introductions without pressure, and how to offer value in return. There is a strong focus on mentorship — how to find mentors, how to schedule conversations, and how to make the most of advice sessions. The guide is written for students who want referrals, interview preparation support, and career guidance, while still keeping interactions professional and easy to maintain.`,
+    details: `Networking is a skill, not a personality trait. This guide helps you build relationships that are both useful and genuine. It starts with identifying the right people: alumni, professors, recruiters, and peers in your target field. Then it explains how to craft short, respectful outreach messages that introduce yourself, explain your interest, and request a specific next step. The resource also covers how to maintain momentum after an initial meeting, how to ask for introductions without pressure, and how to offer value in return. There is a strong focus on mentorship - how to find mentors, how to schedule conversations, and how to make the most of advice sessions. The guide is written for students who want referrals, interview preparation support, and career guidance, while still keeping interactions professional and easy to maintain.`,
   },
   {
     id: 10,
     title: 'Email Templates for Recruiter Outreach',
     category: 'Networking',
     summary: 'Ready-to-use message templates for reaching out to recruiters, alumni, and hiring managers.',
-    details: `Sending the right message can open doors quickly. This resource includes proven email and LinkedIn templates for outreach at different stages of your search. You will find examples for asking about open roles, requesting a referral, following up after an interview, and reconnecting with a contact after a networking event. Each template includes guidance on how to personalise it, which details to keep, and how to avoid sounding generic. The guide also explains the etiquette of follow-up timing and how to respect someone’s time while still showing interest. With these templates, you can write outreach messages faster and more confidently while still sounding polished and professional.`,
+    details: `Sending the right message can open doors quickly. This resource includes proven email and LinkedIn templates for outreach at different stages of your search. You will find examples for asking about open roles, requesting a referral, following up after an interview, and reconnecting with a contact after a networking event. Each template includes guidance on how to personalise it, which details to keep, and how to avoid sounding generic. The guide also explains the etiquette of follow-up timing and how to respect someone's time while still showing interest. With these templates, you can write outreach messages faster and more confidently while still sounding polished and professional.`,
   },
   {
     id: 11,
@@ -117,7 +117,7 @@ export default function ResourcesPage() {
     <div style={{ background: '#030a1a', minHeight: '100vh' }}>
       <section style={{ padding: '80px 24px 48px', background: 'linear-gradient(180deg, #071230 0%, #030a1a 100%)' }}>
         <div style={{ maxWidth: 780, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 999, background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399', fontSize: 13, fontWeight: 700, marginBottom: 20 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 999, background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)', color: '#6366f1', fontSize: 13, fontWeight: 700, marginBottom: 20 }}>
             <BookOpen size={16} /> Premium student guides
           </div>
           <h1 style={{ fontSize: 'clamp(34px, 5vw, 56px)', fontWeight: 800, color: '#f1f5f9', lineHeight: 1.05, marginBottom: 20 }}>
@@ -132,7 +132,7 @@ export default function ResourcesPage() {
       <section style={{ padding: '40px 24px 0', maxWidth: 1200, margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 24, marginBottom: 36 }}>
           <div>
-            <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Explore</p>
+            <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Explore</p>
             <h2 style={{ fontSize: 'clamp(26px, 3vw, 38px)', fontWeight: 800, color: '#f1f5f9', marginBottom: 16 }}>15 resources to sharpen your applications and interviews</h2>
             <p style={{ fontSize: 15, color: '#94a3b8', lineHeight: 1.8 }}>
               Jump into guides for your next CV update, interview prep, salary research, or networking outreach. Each card expands into a full breakdown so you can keep the page clean while reading the topics that matter most.
@@ -140,7 +140,7 @@ export default function ResourcesPage() {
           </div>
           <div style={{ display: 'grid', gap: 14 }}>
             <div style={{ padding: 22, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', marginBottom: 10 }}>How to use this page</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', marginBottom: 10 }}>How to use this page</p>
               <ul style={{ paddingLeft: 18, color: '#94a3b8', fontSize: 14, lineHeight: 1.7 }}>
                 <li style={{ marginBottom: 8 }}>Open the resource card most relevant to your next job milestone.</li>
                 <li style={{ marginBottom: 8 }}>Copy the examples, templates, and checklist items into your own application folder.</li>
@@ -148,8 +148,8 @@ export default function ResourcesPage() {
               </ul>
             </div>
             <div style={{ padding: 22, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', marginBottom: 10 }}>Best starting points</p>
-              <p style={{ fontSize: 14, color: '#f1f5f9', marginBottom: 10 }}><strong>CV Design for Global Markets</strong><br />If you’re updating your resume, start here.</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', marginBottom: 10 }}>Best starting points</p>
+              <p style={{ fontSize: 14, color: '#f1f5f9', marginBottom: 10 }}><strong>CV Design for Global Markets</strong><br />If you're updating your resume, start here.</p>
               <p style={{ fontSize: 14, color: '#f1f5f9', marginBottom: 10 }}><strong>STAR Method for Interview Answers</strong><br />Perfect for early practice with behavioural questions.</p>
               <p style={{ fontSize: 14, color: '#f1f5f9' }}><strong>Salary Benchmarking for Graduates</strong><br />Use this before negotiating your first offer.</p>
             </div>
@@ -170,11 +170,11 @@ export default function ResourcesPage() {
                 }}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#10b981', marginBottom: 8 }}>{resource.category}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#6366f1', marginBottom: 8 }}>{resource.category}</div>
                   <h3 style={{ fontSize: 22, fontWeight: 800, margin: 0, lineHeight: 1.15 }}>{resource.title}</h3>
                   <p style={{ fontSize: 15, color: '#94a3b8', marginTop: 12, maxWidth: 820 }}>{resource.summary}</p>
                 </div>
-                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 42, height: 42, borderRadius: 999, background: 'rgba(16,185,129,0.11)', color: '#10b981' }}>
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 42, height: 42, borderRadius: 999, background: 'rgba(99,102,241,0.11)', color: '#6366f1' }}>
                   {openId === resource.id ? <ChevronUp size={22} /> : <ChevronDown size={22} />}
                 </span>
               </button>
@@ -188,14 +188,14 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      <section style={{ padding: '72px 24px', background: 'linear-gradient(135deg, #071230 0%, #0d1f4f 50%, #071230 100%)', borderTop: '1px solid rgba(16,185,129,0.1)' }}>
+      <section style={{ padding: '72px 24px', background: 'linear-gradient(135deg, #071230 0%, #0d1f4f 50%, #071230 100%)', borderTop: '1px solid rgba(99,102,241,0.1)' }}>
         <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, color: '#f1f5f9', marginBottom: 16 }}>Want personalised guidance?</h2>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800, color: '#f1f5f9', marginBottom: 16 }}>Want tailored guidance?</h2>
           <p style={{ fontSize: 16, color: '#94a3b8', lineHeight: 1.8, marginBottom: 30 }}>
-            Sign up and we’ll tailor our resources to your field, location, and target role. Get the most relevant templates and timelines delivered on the dashboard.
+            Sign up and we'll tailor our resources to your field, location, and target role. Get the most relevant templates and timelines delivered on the dashboard.
           </p>
-          <Link to="/signup" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 32px', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', textDecoration: 'none', fontSize: 15, fontWeight: 700 }}>
-            Start with personalised resources <ArrowRight size={16} />
+          <Link to="/signup" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '14px 32px', borderRadius: 12, background: 'linear-gradient(135deg, #6366f1, #1e40af)', color: 'white', textDecoration: 'none', fontSize: 15, fontWeight: 700 }}>
+            Start with relevant resources <ArrowRight size={16} />
           </Link>
         </div>
       </section>

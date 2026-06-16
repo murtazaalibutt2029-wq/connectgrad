@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Loader, Download, ChevronDown, ChevronUp, User, Briefcase, FileText, CheckCircle, XCircle, Clock, PlusCircle } from 'lucide-react'
+import { Loader, Download, ChevronDown, ChevronUp, Bell, Briefcase, FileText, CheckCircle, XCircle, Clock, PlusCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
 const STATUS_STYLES = {
-  pending:     { label: 'Pending',     color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.25)' },
-  shortlisted: { label: 'Shortlisted', color: '#10b981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.25)' },
-  rejected:    { label: 'Rejected',    color: '#f87171', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.2)'  },
+  pending:     { label: 'Pending',     color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.25)' },
+  shortlisted: { label: 'Shortlisted', color: '#6366f1', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.28)' },
+  interview:   { label: 'Interview',   color: '#6366f1', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.25)' },
+  rejected:    { label: 'Rejected',    color: '#f87171', bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.25)' },
 }
 
 function StatusBadge({ status }) {
@@ -34,7 +35,7 @@ function ApplicationCard({ app, onStatusChange }) {
           background: 'linear-gradient(135deg, #071230, #0d1f4f)',
           border: '1px solid rgba(255,255,255,0.1)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 13, fontWeight: 700, color: '#10b981',
+          fontSize: 13, fontWeight: 700, color: '#6366f1',
         }}>
           {(app.applicant_name || '?').charAt(0).toUpperCase()}
         </div>
@@ -42,7 +43,7 @@ function ApplicationCard({ app, onStatusChange }) {
         <div style={{ flex: 1, minWidth: 180 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: '#f1f5f9' }}>{app.applicant_name || 'Unknown'}</div>
           <div style={{ fontSize: 12, color: '#64748b' }}>
-            {app.applicant_university || '—'}{app.applicant_degree ? ` · ${app.applicant_degree}` : ''}
+            {app.applicant_university || '-'}{app.applicant_degree ? ` · ${app.applicant_degree}` : ''}
           </div>
         </div>
 
@@ -59,26 +60,26 @@ function ApplicationCard({ app, onStatusChange }) {
 
         {/* Status selector */}
         <select
-          value={app.status}
-          onChange={e => onStatusChange(app.id, e.target.value)}
-          onClick={e => e.stopPropagation()}
-          style={{
-            padding: '5px 10px', borderRadius: 7, fontSize: 12,
-            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-            color: '#94a3b8', cursor: 'pointer', outline: 'none',
-          }}
-        >
-          <option value="pending">Pending</option>
-          <option value="shortlisted">Shortlisted</option>
-          <option value="rejected">Rejected</option>
-        </select>
-
+            value={app.status}
+            onChange={e => onStatusChange(app.id, e.target.value)}
+            onClick={e => e.stopPropagation()}
+            style={{
+              padding: '5px 10px', borderRadius: 7, fontSize: 12,
+              background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
+              color: '#f1f5f9', cursor: 'pointer', outline: 'none',
+            }}
+          >
+            <option value="pending">Pending</option>
+            <option value="interview">Interview</option>
+            <option value="shortlisted">Shortlisted</option>
+            <option value="rejected">Rejected</option>
+          </select>
         {app.cv_url && (
           <a href={app.cv_url} target="_blank" rel="noopener noreferrer" style={{
             display: 'flex', alignItems: 'center', gap: 5,
             padding: '6px 12px', borderRadius: 7, fontSize: 12, fontWeight: 500,
             background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.2)',
-            color: '#7dd3fc', textDecoration: 'none',
+            color: '#93c5fd', textDecoration: 'none',
           }}>
             <Download size={12} /> CV
           </a>
@@ -120,35 +121,66 @@ export default function EmployerDashboard() {
   const navigate = useNavigate()
   const [apps, setApps]         = useState([])
   const [postedJobs, setPostedJobs] = useState([])
+  const [notifications, setNotifications] = useState([])
+  const [loadingNotifications, setLoadingNotifications] = useState(true)
   const [fetching, setFetching] = useState(true)
   const [filter, setFilter]     = useState('all')
 
-  useEffect(() => { if (!loading && !session) navigate('/login') }, [session, loading])
+  useEffect(() => { if (!loading && !session) navigate('/login') }, [session, loading, navigate])
 
   useEffect(() => {
     if (!session) return
     const fetchEmployerData = async () => {
-      const [applicationsRes, jobsRes] = await Promise.all([
+      const [applicationsRes, jobsRes, notificationsRes] = await Promise.all([
         supabase.from('applications').select('*').order('created_at', { ascending: false }),
         supabase.from('jobs').select('*').eq('employer_id', session.user.id).order('created_at', { ascending: false }),
+        supabase.from('notifications').select('*').eq('recipient_id', session.user.id).order('created_at', { ascending: false }),
       ])
 
       setApps(applicationsRes.data || [])
       setPostedJobs(jobsRes.data || [])
+      setNotifications(notificationsRes.data || [])
       setFetching(false)
+      setLoadingNotifications(false)
     }
 
     fetchEmployerData()
   }, [session])
 
   const updateStatus = async (id, status) => {
+    const app = apps.find(a => a.id === id)
+    if (!app) return
+
     await supabase.from('applications').update({ status }).eq('id', id)
     setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a))
+
+    if (!app.user_id) return
+
+    const messageMap = {
+      pending: `Your application for ${app.job_title} at ${app.company} is listed as pending with the employer.`,
+      interview: `Good news - ${app.company} wants to schedule an interview for ${app.job_title}. Check your ConnectGrad tracker for details.`,
+      shortlisted: `Your application for ${app.job_title} at ${app.company} has been shortlisted. You are moving to the next stage.`,
+      rejected: `Your application for ${app.job_title} at ${app.company} has been declined. Keep applying - the right role is ahead.`,
+    }
+
+    await supabase.from('notifications').insert({
+      recipient_id: app.user_id,
+      title: `Application ${STATUS_STYLES[status]?.label ?? 'Update'}`,
+      message: messageMap[status] || `Your application for ${app.job_title} at ${app.company} is now ${status}.`,
+      is_read: false,
+    })
+  }
+
+  const markAllNotificationsRead = async () => {
+    if (!session) return
+    await supabase.from('notifications').update({ is_read: true }).eq('recipient_id', session.user.id)
+    setNotifications(prev => prev.map(note => ({ ...note, is_read: true })))
   }
 
   const counts = {
     all:         apps.length,
     pending:     apps.filter(a => a.status === 'pending').length,
+    interview:   apps.filter(a => a.status === 'interview').length,
     shortlisted: apps.filter(a => a.status === 'shortlisted').length,
     rejected:    apps.filter(a => a.status === 'rejected').length,
   }
@@ -157,7 +189,7 @@ export default function EmployerDashboard() {
 
   if (loading || fetching) return (
     <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#030a1a' }}>
-      <Loader size={24} color="#10b981" style={{ animation: 'spin 0.8s linear infinite' }} />
+      <Loader size={24} color="#6366f1" style={{ animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
@@ -169,7 +201,7 @@ export default function EmployerDashboard() {
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
             <div>
-              <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Employer Portal</p>
+              <p style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Employer Portal</p>
               <h1 style={{ fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.8px', marginBottom: 14 }}>
                 Applications Dashboard
               </h1>
@@ -180,8 +212,8 @@ export default function EmployerDashboard() {
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '14px 22px', borderRadius: 14, border: 'none', cursor: 'pointer',
-                background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontSize: 15, fontWeight: 700,
-                boxShadow: '0 18px 40px rgba(16,185,129,0.18)',
+                background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', fontSize: 15, fontWeight: 700,
+                boxShadow: '0 18px 40px rgba(99,102,241,0.18)',
               }}
             >
               <Briefcase size={16} /> Post a job
@@ -205,20 +237,20 @@ export default function EmployerDashboard() {
 
           <div style={{ marginTop: 26, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Why post here?</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Why post here?</p>
               <ul style={{ listStyle: 'inside disc', color: '#94a3b8', lineHeight: 1.8, margin: 0, paddingLeft: 12 }}>
                 <li>Attract motivated graduates in Pakistan, UK, USA and Europe.</li>
-                <li>Receive applications from candidates with polished profiles and AI-generated letters.</li>
+                <li>Receive applications from candidates with polished profiles and generated letters.</li>
                 <li>Keep the entire hiring pipeline visible inside ConnectGrad.</li>
               </ul>
             </div>
             <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Latest job preview</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Latest job preview</p>
               {postedJobs[0] ? (
                 <div>
                   <p style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>{postedJobs[0].title}</p>
                   <p style={{ fontSize: 13, color: '#64748b', marginBottom: 10 }}>{postedJobs[0].company} · {postedJobs[0].region}</p>
-                  <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>{postedJobs[0].description.slice(0, 120)}{postedJobs[0].description.length > 120 ? '…' : ''}</p>
+                  <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7 }}>{postedJobs[0].description.slice(0, 120)}{postedJobs[0].description.length > 120 ? '...' : ''}</p>
                 </div>
               ) : (
                 <p style={{ fontSize: 13, color: '#64748b' }}>No jobs posted yet. Create your first role to start receiving qualified applicants.</p>
@@ -229,18 +261,19 @@ export default function EmployerDashboard() {
           {/* Stat chips */}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {[
-              { key: 'all',         label: 'All',         icon: Briefcase, color: '#94a3b8' },
-              { key: 'pending',     label: 'Pending',     icon: Clock,     color: '#f59e0b' },
-              { key: 'shortlisted', label: 'Shortlisted', icon: CheckCircle, color: '#10b981' },
-              { key: 'rejected',    label: 'Rejected',    icon: XCircle,   color: '#f87171' },
-            ].map(({ key, label, icon: Icon, color }) => (
+              { key: 'all',         label: 'All',         icon: Briefcase, color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
+              { key: 'pending',     label: 'Pending',     icon: Clock,     color: '#f59e0b', bg: 'rgba(245,158,11,0.16)' },
+              { key: 'interview',   label: 'Interview',   icon: Clock,     color: '#6366f1', bg: 'rgba(99,102,241,0.16)' },
+              { key: 'shortlisted', label: 'Shortlisted', icon: CheckCircle, color: '#6366f1', bg: 'rgba(99,102,241,0.16)' },
+              { key: 'rejected',    label: 'Rejected',    icon: XCircle,   color: '#f87171', bg: 'rgba(248,113,113,0.16)' },
+            ].map(({ key, label, icon: Icon, color, bg }) => (
               <button
                 key={key}
                 onClick={() => setFilter(key)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: 7,
                   padding: '8px 16px', borderRadius: 9, border: 'none', cursor: 'pointer',
-                  background: filter === key ? `rgba(${color === '#10b981' ? '16,185,129' : color === '#f59e0b' ? '245,158,11' : color === '#f87171' ? '239,68,68' : '148,163,184'},0.12)` : 'rgba(255,255,255,0.04)',
+                  background: filter === key ? bg : 'rgba(255,255,255,0.04)',
                   color: filter === key ? color : '#64748b',
                   fontSize: 13, fontWeight: filter === key ? 700 : 400,
                   border: filter === key ? `1px solid ${color}44` : '1px solid rgba(255,255,255,0.07)',
@@ -254,6 +287,40 @@ export default function EmployerDashboard() {
               </button>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 24px 0' }}>
+        <div style={{ padding: 22, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 14, flexWrap: 'wrap' }}>
+            <div>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#c49b30', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 10 }}>Recent notifications</p>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Candidate updates</h2>
+              <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.7, maxWidth: 640 }}>Status changes and alerts from your hiring workflow are surfaced here. Students receive updates when you change application status.</p>
+            </div>
+            <button
+              onClick={markAllNotificationsRead}
+              style={{ padding: '10px 18px', borderRadius: 10, border: '1px solid rgba(245,158,11,0.2)', background: 'rgba(245,158,11,0.12)', color: 'white', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}
+            >
+              Mark all read
+            </button>
+          </div>
+
+          {notifications.length === 0 ? (
+            <div style={{ paddingTop: 24, color: '#64748b', fontSize: 13 }}>No notifications yet. Updates will appear as applicants move through your pipeline.</div>
+          ) : (
+            <div style={{ display: 'grid', gap: 12, marginTop: 18 }}>
+              {notifications.slice(0, 3).map(note => (
+                <div key={note.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderRadius: 14, background: note.is_read ? 'rgba(255,255,255,0.02)' : 'rgba(196,155,48,0.12)', border: note.is_read ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(196,155,48,0.2)' }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 12, display: 'grid', placeItems: 'center', background: note.is_read ? 'rgba(255,255,255,0.06)' : 'rgba(196,155,48,0.14)', color: '#c49b30' }}><Bell size={18} /></div>
+                  <div>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#f1f5f9' }}>{note.title}</p>
+                    <p style={{ margin: '6px 0 0', fontSize: 13, color: '#94a3b8' }}>{note.message}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

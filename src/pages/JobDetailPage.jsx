@@ -9,9 +9,9 @@ import {
 import { jobs } from '../data/jobs'
 
 const typeColors = {
-  'Internship':    { bg: 'rgba(16,185,129,0.1)',  color: '#34d399', border: 'rgba(16,185,129,0.2)' },
+  'Internship':    { bg: 'rgba(99,102,241,0.1)',  color: '#6366f1', border: 'rgba(99,102,241,0.2)' },
   'Graduate Role': { bg: 'rgba(99,102,241,0.1)',  color: '#a5b4fc', border: 'rgba(99,102,241,0.2)' },
-  'Full-time':     { bg: 'rgba(14,165,233,0.1)',  color: '#7dd3fc', border: 'rgba(14,165,233,0.2)' },
+  'Full-time':     { bg: 'rgba(14,165,233,0.1)',  color: '#93c5fd', border: 'rgba(14,165,233,0.2)' },
   'Part-time':     { bg: 'rgba(245,158,11,0.1)',  color: '#fcd34d', border: 'rgba(245,158,11,0.2)' },
 }
 
@@ -25,7 +25,7 @@ function CoverLetterGenerator({ job }) {
   const [apiError, setApiError] = useState('')
   const [form, setForm]         = useState({ name: '', university: '', degree: '', motivation: '' })
 
-  // Auto-fill from saved profile — skip "Other" (legacy signup dropdown value)
+  // Auto-fill from saved profile - skip "Other" (legacy signup dropdown value)
   useEffect(() => {
     if (profile) {
       const savedUni = profile.university !== 'Other' ? (profile.university || '') : ''
@@ -78,7 +78,7 @@ function CoverLetterGenerator({ job }) {
     const url  = URL.createObjectURL(blob)
     const a    = document.createElement('a')
     a.href     = url
-    a.download = `Cover Letter — ${job.title} at ${job.company}.txt`
+    a.download = `Cover Letter - ${job.title} at ${job.company}.txt`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -88,26 +88,26 @@ function CoverLetterGenerator({ job }) {
     return (
       <div style={{
         background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(16,185,129,0.15)',
+        border: '1px solid rgba(99,102,241,0.15)',
         borderRadius: 20, overflow: 'hidden',
       }}>
         <div style={{
-          background: 'linear-gradient(135deg, rgba(16,185,129,0.08), rgba(5,150,105,0.04))',
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(99,102,241,0.04))',
           padding: '32px 28px',
-          borderBottom: '1px solid rgba(16,185,129,0.1)',
+          borderBottom: '1px solid rgba(99,102,241,0.1)',
         }}>
           <div style={{
             width: 48, height: 48, borderRadius: 14,
-            background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)',
+            background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16,
           }}>
-            <Sparkles size={22} color="#10b981" />
+            <Sparkles size={22} color="#6366f1" />
           </div>
           <h3 style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>
-            AI Cover Letter Generator
+            Cover Letter Builder
           </h3>
           <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7 }}>
-            Generate a professional, tailored cover letter for this role in seconds. Just fill in a few details about yourself.
+            Create a polished cover letter for this role in seconds. Just fill in a few details about yourself.
           </p>
         </div>
         <div style={{ padding: '20px 28px' }}>
@@ -119,7 +119,7 @@ function CoverLetterGenerator({ job }) {
               'Copy or download as a text file',
             ].map(item => (
               <li key={item} style={{ display: 'flex', gap: 10, fontSize: 13, color: '#94a3b8', marginBottom: 10, alignItems: 'flex-start' }}>
-                <Check size={14} color="#10b981" style={{ flexShrink: 0, marginTop: 1 }} />
+                <Check size={14} color="#6366f1" style={{ flexShrink: 0, marginTop: 1 }} />
                 {item}
               </li>
             ))}
@@ -128,14 +128,14 @@ function CoverLetterGenerator({ job }) {
             onClick={() => setStage('form')}
             style={{
               width: '100%', padding: '13px 0', borderRadius: 11,
-              background: 'linear-gradient(135deg, #059669, #10b981)',
+              background: 'linear-gradient(135deg, #6366f1, #6366f1)',
               border: 'none', cursor: 'pointer',
               color: 'white', fontSize: 15, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              boxShadow: '0 0 24px rgba(16,185,129,0.3)',
+              boxShadow: '0 0 24px rgba(99,102,241,0.3)',
             }}
           >
-            <Sparkles size={16} /> Generate AI Cover Letter
+            <Sparkles size={16} /> Generate cover letter
           </button>
         </div>
       </div>
@@ -147,7 +147,7 @@ function CoverLetterGenerator({ job }) {
     return (
       <div style={{
         background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(16,185,129,0.15)',
+        border: '1px solid rgba(99,102,241,0.15)',
         borderRadius: 20, overflow: 'hidden',
       }}>
         <div style={{
@@ -155,7 +155,7 @@ function CoverLetterGenerator({ job }) {
           borderBottom: '1px solid rgba(255,255,255,0.06)',
           display: 'flex', alignItems: 'center', gap: 10,
         }}>
-          <Sparkles size={16} color="#10b981" />
+          <Sparkles size={16} color="#6366f1" />
           <span style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9' }}>Your details</span>
         </div>
         <form onSubmit={handleGenerate} style={{ padding: '20px 24px' }}>
@@ -176,7 +176,7 @@ function CoverLetterGenerator({ job }) {
                 }}
               />
               <p style={{ fontSize: 11, color: '#475569', marginTop: 5 }}>
-                Optional — but the more you share, the more personalised your letter will be.
+                Optional - but the more you share, the more personalized your letter will be.
               </p>
             </div>
           </div>
@@ -198,11 +198,11 @@ function CoverLetterGenerator({ job }) {
               disabled={!filled}
               style={{
                 flex: 1, padding: '11px 0', borderRadius: 9,
-                background: filled ? 'linear-gradient(135deg, #059669, #10b981)' : 'rgba(255,255,255,0.05)',
+                background: filled ? 'linear-gradient(135deg, #6366f1, #6366f1)' : 'rgba(255,255,255,0.05)',
                 border: 'none', cursor: filled ? 'pointer' : 'not-allowed',
                 color: filled ? 'white' : '#475569', fontSize: 14, fontWeight: 700,
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                boxShadow: filled ? '0 0 20px rgba(16,185,129,0.3)' : 'none',
+                boxShadow: filled ? '0 0 20px rgba(99,102,241,0.3)' : 'none',
                 transition: 'all 0.2s',
               }}
             >
@@ -219,26 +219,26 @@ function CoverLetterGenerator({ job }) {
     return (
       <div style={{
         background: 'rgba(255,255,255,0.02)',
-        border: '1px solid rgba(16,185,129,0.15)',
+        border: '1px solid rgba(99,102,241,0.15)',
         borderRadius: 20, padding: '56px 28px',
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16,
       }}>
         <div style={{
           width: 52, height: 52, borderRadius: 14,
-          background: 'rgba(16,185,129,0.1)',
+          background: 'rgba(99,102,241,0.1)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           animation: 'pulse 1.2s ease-in-out infinite',
         }}>
-          <Sparkles size={24} color="#10b981" />
+          <Sparkles size={24} color="#6366f1" />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <p style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', marginBottom: 6 }}>Generating your cover letter…</p>
+          <p style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', marginBottom: 6 }}>Generating your cover letter...</p>
           <p style={{ fontSize: 13, color: '#64748b' }}>Tailoring it to {job.company} and your profile</p>
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {[0, 1, 2].map(i => (
             <div key={i} style={{
-              width: 7, height: 7, borderRadius: '50%', background: '#10b981',
+              width: 7, height: 7, borderRadius: '50%', background: '#6366f1',
               animation: `bounce 0.8s ease-in-out ${i * 0.15}s infinite`,
             }} />
           ))}
@@ -285,19 +285,19 @@ function CoverLetterGenerator({ job }) {
   return (
     <div style={{
       background: 'rgba(255,255,255,0.02)',
-      border: '1px solid rgba(16,185,129,0.2)',
+      border: '1px solid rgba(99,102,241,0.2)',
       borderRadius: 20, overflow: 'hidden',
     }}>
       {/* Header */}
       <div style={{
         padding: '16px 20px',
-        background: 'rgba(16,185,129,0.06)',
-        borderBottom: '1px solid rgba(16,185,129,0.1)',
+        background: 'rgba(99,102,241,0.06)',
+        borderBottom: '1px solid rgba(99,102,241,0.1)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Check size={15} color="#10b981" />
-          <span style={{ fontSize: 14, fontWeight: 700, color: '#34d399' }}>Cover letter generated</span>
+          <Check size={15} color="#6366f1" />
+          <span style={{ fontSize: 14, fontWeight: 700, color: '#6366f1' }}>Cover letter generated</span>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <ActionBtn icon={<RotateCcw size={13} />} label="Regenerate" onClick={() => setStage('form')} />
@@ -324,7 +324,7 @@ function CoverLetterGenerator({ job }) {
         background: 'rgba(255,255,255,0.01)',
       }}>
         <p style={{ fontSize: 11, color: '#475569' }}>
-          Tip: Review and personalise before sending — add specific examples from your projects or experience to make it uniquely yours.
+          Tip: Review and personalise before sending - add specific examples from your projects or experience to make it uniquely yours.
         </p>
       </div>
     </div>
@@ -336,8 +336,8 @@ function ActionBtn({ icon, label, onClick, primary }) {
     <button onClick={onClick} style={{
       display: 'flex', alignItems: 'center', gap: 5,
       padding: '6px 11px', borderRadius: 7, border: 'none', cursor: 'pointer',
-      background: primary ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.05)',
-      color: primary ? '#34d399' : '#94a3b8',
+      background: primary ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.05)',
+      color: primary ? '#6366f1' : '#94a3b8',
       fontSize: 12, fontWeight: 500,
     }}>
       {icon}{label}
@@ -380,7 +380,7 @@ export default function JobDetailPage() {
       <div style={{ textAlign: 'center', padding: '100px 24px', background: '#030a1a', minHeight: '60vh' }}>
         <p style={{ fontSize: 48, marginBottom: 16 }}>🔍</p>
         <h2 style={{ fontSize: 22, color: '#f1f5f9', marginBottom: 12 }}>Job not found</h2>
-        <Link to="/jobs" style={{ color: '#10b981', fontSize: 14 }}>← Back to Jobs</Link>
+        <Link to="/jobs" style={{ color: '#6366f1', fontSize: 14 }}>← Back to Jobs</Link>
       </div>
     )
   }
@@ -417,14 +417,14 @@ export default function JobDetailPage() {
             {/* Header card */}
             <div style={{
               background: 'rgba(255,255,255,0.02)',
-              border: `1px solid ${job.featured ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.07)'}`,
+              border: `1px solid ${job.featured ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.07)'}`,
               borderRadius: 20, padding: 28, marginBottom: 20,
               position: 'relative', overflow: 'hidden',
             }}>
               {job.featured && (
                 <div style={{
                   position: 'absolute', top: 0, right: 0,
-                  background: 'linear-gradient(135deg, #059669, #10b981)',
+                  background: 'linear-gradient(135deg, #6366f1, #6366f1)',
                   fontSize: 10, fontWeight: 700, color: 'white',
                   padding: '5px 14px', borderRadius: '0 20px 0 10px', letterSpacing: 0.5,
                 }}>FEATURED</div>
@@ -483,8 +483,8 @@ export default function JobDetailPage() {
                 {job.tags.map(tag => (
                   <span key={tag} style={{
                     padding: '6px 14px', borderRadius: 8,
-                    background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.15)',
-                    fontSize: 13, color: '#34d399', fontWeight: 500,
+                    background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.15)',
+                    fontSize: 13, color: '#6366f1', fontWeight: 500,
                   }}>
                     {tag}
                   </span>
@@ -528,7 +528,7 @@ export default function JobDetailPage() {
                   'Structured mentorship and regular performance feedback',
                 ].map(item => (
                   <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, fontSize: 13, color: '#94a3b8' }}>
-                    <ChevronRight size={14} color="#10b981" style={{ marginTop: 1, flexShrink: 0 }} />
+                    <ChevronRight size={14} color="#6366f1" style={{ marginTop: 1, flexShrink: 0 }} />
                     {item}
                   </li>
                 ))}
@@ -557,10 +557,10 @@ export default function JobDetailPage() {
                       onClick={() => session ? setShowApplyModal(true) : navigate('/login')}
                       style={{
                         width: '100%', padding: '12px 0', borderRadius: 10,
-                        background: 'linear-gradient(135deg, #059669, #10b981)',
+                        background: 'linear-gradient(135deg, #6366f1, #6366f1)',
                         border: 'none', cursor: 'pointer',
                         color: 'white', fontSize: 14, fontWeight: 700,
-                        boxShadow: '0 0 20px rgba(16,185,129,0.3)',
+                        boxShadow: '0 0 20px rgba(99,102,241,0.3)',
                       }}
                     >
                       Apply Now

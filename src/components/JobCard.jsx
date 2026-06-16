@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom'
 import { MapPin, Clock, DollarSign, Check } from 'lucide-react'
 
 const typeColors = {
-  'Internship':    { bg: 'rgba(16,185,129,0.1)',  color: '#34d399', border: 'rgba(16,185,129,0.2)' },
+  'Internship':    { bg: 'rgba(99,102,241,0.1)',  color: '#6366f1', border: 'rgba(99,102,241,0.2)' },
   'Graduate Role': { bg: 'rgba(99,102,241,0.1)',  color: '#a5b4fc', border: 'rgba(99,102,241,0.2)' },
-  'Full-time':     { bg: 'rgba(14,165,233,0.1)',  color: '#7dd3fc', border: 'rgba(14,165,233,0.2)' },
+  'Full-time':     { bg: 'rgba(14,165,233,0.1)',  color: '#93c5fd', border: 'rgba(14,165,233,0.2)' },
   'Part-time':     { bg: 'rgba(245,158,11,0.1)',  color: '#fcd34d', border: 'rgba(245,158,11,0.2)' },
 }
 
@@ -14,9 +14,9 @@ export default function JobCard({ job, selected = false, onToggle }) {
   const selectable = typeof onToggle === 'function'
 
   const baseBorder = selected
-    ? 'rgba(16,185,129,0.5)'
-    : job.featured ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)'
-  const baseBg = selected ? 'rgba(16,185,129,0.06)' : 'rgba(255,255,255,0.03)'
+    ? 'rgba(99,102,241,0.5)'
+    : job.featured ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)'
+  const baseBg = selected ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.03)'
 
   return (
     <div
@@ -33,11 +33,11 @@ export default function JobCard({ job, selected = false, onToggle }) {
         transition: 'all 0.15s',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: selected ? '0 0 0 1px rgba(16,185,129,0.2)' : 'none',
+        boxShadow: selected ? '0 0 0 1px rgba(99,102,241,0.2)' : 'none',
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.background = selected ? 'rgba(16,185,129,0.09)' : 'rgba(255,255,255,0.05)'
-        if (!selected) e.currentTarget.style.borderColor = 'rgba(16,185,129,0.3)'
+        e.currentTarget.style.background = selected ? 'rgba(99,102,241,0.09)' : 'rgba(255,255,255,0.05)'
+        if (!selected) e.currentTarget.style.borderColor = 'rgba(99,102,241,0.3)'
         e.currentTarget.style.transform = 'translateY(-2px)'
         e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.3)'
       }}
@@ -45,7 +45,7 @@ export default function JobCard({ job, selected = false, onToggle }) {
         e.currentTarget.style.background = baseBg
         e.currentTarget.style.borderColor = baseBorder
         e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = selected ? '0 0 0 1px rgba(16,185,129,0.2)' : 'none'
+        e.currentTarget.style.boxShadow = selected ? '0 0 0 1px rgba(99,102,241,0.2)' : 'none'
       }}
     >
       {/* Checkbox */}
@@ -56,7 +56,7 @@ export default function JobCard({ job, selected = false, onToggle }) {
           style={{
             position: 'absolute', top: 14, left: 14,
             width: 20, height: 20, borderRadius: 6,
-            background: selected ? 'linear-gradient(135deg, #059669, #10b981)' : 'rgba(255,255,255,0.06)',
+            background: selected ? 'linear-gradient(135deg, #6366f1, #6366f1)' : 'rgba(255,255,255,0.06)',
             border: `1.5px solid ${selected ? 'transparent' : 'rgba(255,255,255,0.15)'}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'all 0.15s', zIndex: 1, cursor: 'pointer',
@@ -70,7 +70,7 @@ export default function JobCard({ job, selected = false, onToggle }) {
       {job.featured && (
         <div style={{
           position: 'absolute', top: 0, right: 0,
-          background: 'linear-gradient(135deg, #059669, #10b981)',
+          background: 'linear-gradient(135deg, #6366f1, #6366f1)',
           fontSize: 10, fontWeight: 700, color: 'white',
           padding: '4px 10px', borderRadius: '0 16px 0 8px', letterSpacing: 0.5,
         }}>
@@ -78,7 +78,7 @@ export default function JobCard({ job, selected = false, onToggle }) {
         </div>
       )}
 
-      {/* Header — shift right when checkbox visible */}
+      {/* Header - shift right when checkbox visible */}
       <div style={{
         display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 14,
         paddingLeft: selectable ? 28 : 0,

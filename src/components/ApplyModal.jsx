@@ -55,7 +55,7 @@ export default function ApplyModal({ job, onClose }) {
       let cvUrl = null
 
       if (useProfileResume && profile?.resume_url) {
-        // Use the resume already saved in their profile — no re-upload needed
+        // Use the resume already saved in their profile - no re-upload needed
         cvUrl = profile.resume_url
       } else if (cvFile) {
         const path = `${session.user.id}/${job.id}-${Date.now()}.pdf`
@@ -101,7 +101,7 @@ export default function ApplyModal({ job, onClose }) {
       <div style={{
         width: '100%', maxWidth: 600, maxHeight: '90vh',
         background: '#0d1f4f',
-        border: '1px solid rgba(16,185,129,0.2)',
+        border: '1px solid rgba(99,102,241,0.2)',
         borderRadius: 20, overflow: 'hidden',
         display: 'flex', flexDirection: 'column',
         boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
@@ -133,16 +133,16 @@ export default function ApplyModal({ job, onClose }) {
           {/* ── Generating ── */}
           {stage === 'generating' && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, padding: '40px 0', textAlign: 'center' }}>
-              <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'pulse 1.2s ease-in-out infinite' }}>
-                <Sparkles size={24} color="#10b981" />
+              <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'pulse 1.2s ease-in-out infinite' }}>
+                <Sparkles size={24} color="#6366f1" />
               </div>
               <div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', marginBottom: 6 }}>Writing your cover letter…</p>
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#f1f5f9', marginBottom: 6 }}>Writing your cover letter...</p>
                 <p style={{ fontSize: 13, color: '#64748b' }}>Tailoring it to {job.company} using your profile</p>
               </div>
               <div style={{ display: 'flex', gap: 6 }}>
                 {[0, 1, 2].map(i => (
-                  <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', animation: `bounce 0.8s ease-in-out ${i * 0.15}s infinite` }} />
+                  <div key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: '#6366f1', animation: `bounce 0.8s ease-in-out ${i * 0.15}s infinite` }} />
                 ))}
               </div>
             </div>
@@ -163,14 +163,14 @@ export default function ApplyModal({ job, onClose }) {
           {/* ── Success ── */}
           {stage === 'success' && (
             <div style={{ textAlign: 'center', padding: '40px 0' }}>
-              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(16,185,129,0.15)', border: '2px solid rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                <CheckCircle size={30} color="#10b981" />
+              <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(99,102,241,0.15)', border: '2px solid rgba(99,102,241,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                <CheckCircle size={30} color="#6366f1" />
               </div>
               <h3 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Application submitted!</h3>
               <p style={{ fontSize: 14, color: '#64748b', marginBottom: 28 }}>
                 Your application to <strong style={{ color: '#f1f5f9' }}>{job.company}</strong> has been saved. You can track it in your dashboard.
               </p>
-              <button onClick={onClose} style={{ padding: '12px 28px', borderRadius: 10, background: 'linear-gradient(135deg, #059669, #10b981)', border: 'none', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={onClose} style={{ padding: '12px 28px', borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #6366f1)', border: 'none', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                 Done
               </button>
             </div>
@@ -210,9 +210,9 @@ export default function ApplyModal({ job, onClose }) {
                 {/* Using saved profile resume */}
                 {useProfileResume && profile?.resume_url && !cvFile && (
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', marginBottom: 8 }}>
-                      <FileText size={14} color="#10b981" />
-                      <span style={{ fontSize: 13, color: '#34d399', flex: 1 }}>Using your saved resume</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', marginBottom: 8 }}>
+                      <FileText size={14} color="#6366f1" />
+                      <span style={{ fontSize: 13, color: '#6366f1', flex: 1 }}>Using your saved resume</span>
                       <a href={profile.resume_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#64748b', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 3 }}>
                         <ExternalLink size={10} /> View
                       </a>
@@ -227,8 +227,8 @@ export default function ApplyModal({ job, onClose }) {
                 {cvFile && (
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.2)', marginBottom: 8 }}>
-                      <FileText size={14} color="#7dd3fc" />
-                      <span style={{ fontSize: 13, color: '#7dd3fc', flex: 1 }}>{cvFile.name}</span>
+                      <FileText size={14} color="#93c5fd" />
+                      <span style={{ fontSize: 13, color: '#93c5fd', flex: 1 }}>{cvFile.name}</span>
                       <button type="button" onClick={() => { setCvFile(null); if (profile?.resume_url) setUseProfileResume(true) }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex' }}><X size={13} /></button>
                     </div>
                   </div>
@@ -263,16 +263,16 @@ export default function ApplyModal({ job, onClose }) {
               disabled={stage === 'uploading'}
               style={{
                 flex: 1, padding: '12px 0', borderRadius: 9, border: 'none',
-                background: stage === 'uploading' ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #059669, #10b981)',
+                background: stage === 'uploading' ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #6366f1, #6366f1)',
                 color: stage === 'uploading' ? '#475569' : 'white',
                 fontSize: 14, fontWeight: 700,
                 cursor: stage === 'uploading' ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                boxShadow: stage === 'uploading' ? 'none' : '0 0 20px rgba(16,185,129,0.3)',
+                boxShadow: stage === 'uploading' ? 'none' : '0 0 20px rgba(99,102,241,0.3)',
               }}
             >
               {stage === 'uploading'
-                ? <><Loader size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> Submitting…</>
+                ? <><Loader size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> Submitting...</>
                 : <><Send size={14} /> Submit Application</>
               }
             </button>

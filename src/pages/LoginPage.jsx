@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { GraduationCap, Eye, EyeOff, AlertCircle, Loader, CheckCircle } from 'lucide-react'
+import { Eye, EyeOff, AlertCircle, Loader, CheckCircle } from 'lucide-react'
+import Logo from '../components/Logo'
 import { supabase } from '../lib/supabase'
 
 function friendlyError(msg) {
@@ -45,21 +46,12 @@ export default function LoginPage() {
       <div style={{
         flex: '0 0 420px',
         background: 'linear-gradient(180deg, #071230 0%, #0d1f4f 100%)',
-        borderRight: '1px solid rgba(16,185,129,0.1)',
+        borderRight: '1px solid rgba(99,102,241,0.1)',
         padding: '60px 40px',
         display: 'flex', flexDirection: 'column',
       }} className="login-left">
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginBottom: 48 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: 'linear-gradient(135deg, #059669, #10b981)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <GraduationCap size={20} color="white" />
-          </div>
-          <span style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9' }}>
-            Connect<span style={{ color: '#10b981' }}>Grad</span>
-          </span>
+          <Logo mini={true} size={36} />
         </Link>
 
         <div style={{ flex: 1 }}>
@@ -67,17 +59,17 @@ export default function LoginPage() {
             Welcome back
           </h2>
           <p style={{ fontSize: 14, color: '#64748b', lineHeight: 1.7, marginBottom: 40 }}>
-            Log in to access your applications, saved jobs, and AI cover letter generator.
+            Log in to access your applications, saved jobs, and interview-ready resources.
           </p>
 
           {[
             'Track all your applications in one place',
-            'Generate AI cover letters instantly',
-            'Get personalised job recommendations',
-            'Access salary benchmarks & career guides',
+            'Save notes, deadlines, and next steps for every role',
+            'Find relevant student-friendly opportunities',
+            'Build a stronger profile for graduate recruiters',
           ].map(item => (
             <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 14 }}>
-              <CheckCircle size={15} color="#10b981" style={{ flexShrink: 0, marginTop: 1 }} />
+              <CheckCircle size={15} color="#6366f1" style={{ flexShrink: 0, marginTop: 1 }} />
               <span style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.5 }}>{item}</span>
             </div>
           ))}
@@ -85,13 +77,13 @@ export default function LoginPage() {
 
         <div style={{
           marginTop: 40, padding: 20, borderRadius: 12,
-          background: 'rgba(16,185,129,0.07)',
-          border: '1px solid rgba(16,185,129,0.15)',
+          background: 'rgba(99,102,241,0.07)',
+          border: '1px solid rgba(99,102,241,0.15)',
         }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <div style={{
               width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-              background: 'linear-gradient(135deg, #059669, #10b981)',
+              background: 'linear-gradient(135deg, #6366f1, #6366f1)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 14, fontWeight: 700, color: 'white',
             }}>O</div>
@@ -116,7 +108,7 @@ export default function LoginPage() {
           </h2>
           <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32 }}>
             Don't have an account?{' '}
-            <Link to="/signup" style={{ color: '#10b981', textDecoration: 'none', fontWeight: 500 }}>
+            <Link to="/signup" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 500 }}>
               Sign up free
             </Link>
           </p>
@@ -188,16 +180,16 @@ export default function LoginPage() {
               disabled={loading}
               style={{
                 width: '100%', padding: '13px 0', borderRadius: 10, border: 'none',
-                background: loading ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #059669, #10b981)',
+                background: loading ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #6366f1, #6366f1)',
                 color: loading ? '#475569' : 'white',
                 fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                boxShadow: loading ? 'none' : '0 0 24px rgba(16,185,129,0.3)',
+                boxShadow: loading ? 'none' : '0 0 24px rgba(99,102,241,0.3)',
                 transition: 'all 0.2s',
               }}
             >
               {loading
-                ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Signing in…</>
+                ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Signing in...</>
                 : 'Log in'
               }
             </button>

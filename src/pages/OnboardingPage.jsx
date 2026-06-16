@@ -101,7 +101,7 @@ export default function OnboardingPage() {
     <div style={{ background: '#030a1a', minHeight: '100vh', padding: '60px 24px 80px' }}>
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <div style={{ marginBottom: 32 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Welcome aboard</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Welcome aboard</p>
           <h1 style={{ fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 800, color: '#f1f5f9', marginBottom: 12 }}>Complete your profile in 3 quick steps</h1>
           <p style={{ fontSize: 15, color: '#94a3b8', maxWidth: 650 }}>A polished profile means better applications, smarter matches, and more confidence when you hit Apply.</p>
         </div>
@@ -113,33 +113,33 @@ export default function OnboardingPage() {
                 <p style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 8 }}>Progress</p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
                   {stepLabels.map((label, index) => (
-                    <div key={label} style={{ flex: 1, minWidth: 100, padding: 14, borderRadius: 16, background: index + 1 <= step ? 'rgba(16,185,129,0.14)' : 'rgba(255,255,255,0.02)', border: index + 1 === step ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(255,255,255,0.08)' }}>
-                      <p style={{ fontSize: 11, fontWeight: 700, color: index + 1 <= step ? '#10b981' : '#64748b', marginBottom: 6 }}>{`Step ${index + 1}`}</p>
+                    <div key={label} style={{ flex: 1, minWidth: 100, padding: 14, borderRadius: 16, background: index + 1 <= step ? 'rgba(99,102,241,0.14)' : 'rgba(255,255,255,0.02)', border: index + 1 === step ? '1px solid rgba(99,102,241,0.3)' : '1px solid rgba(255,255,255,0.08)' }}>
+                      <p style={{ fontSize: 11, fontWeight: 700, color: index + 1 <= step ? '#6366f1' : '#64748b', marginBottom: 6 }}>{`Step ${index + 1}`}</p>
                       <p style={{ fontSize: 13, color: '#f1f5f9' }}>{label}</p>
                     </div>
                   ))}
                 </div>
               </div>
               <div style={{ width: '100%', height: 10, borderRadius: 999, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-                <div style={{ width: `${(step / 3) * 100}%`, height: '100%', background: 'linear-gradient(135deg, #059669, #10b981)' }} />
+                <div style={{ width: `${(step / 3) * 100}%`, height: '100%', background: 'linear-gradient(135deg, #6366f1, #6366f1)' }} />
               </div>
             </div>
 
             {step === 1 && (
               <div style={{ padding: 24, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9', marginBottom: 10 }}>Upload your resume</h2>
-                <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 20 }}>Optional but recommended. This helps your profile look complete and gives the AI a better sense of your experience.</p>
+                <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 20 }}>Optional but recommended. This helps your profile look complete and gives employers a better sense of your experience.</p>
                 <input ref={fileRef} type="file" accept=".pdf" onChange={handleResumeChange} style={{ display: 'none' }} />
-                <button type="button" onClick={() => fileRef.current.click()} style={{ width: '100%', padding: '14px 0', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                <button type="button" onClick={() => fileRef.current.click()} style={{ width: '100%', padding: '14px 0', borderRadius: 12, background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                   <Upload size={16} /> Upload resume
                 </button>
                 {resumeStatus && resumeStatus !== 'done' && (
-                  <p style={{ marginTop: 16, fontSize: 13, color: '#f3f4f6' }}>{resumeStatus === 'reading' ? 'Reading file…' : 'Uploading…'}</p>
+                  <p style={{ marginTop: 16, fontSize: 13, color: '#f3f4f6' }}>{resumeStatus === 'reading' ? 'Reading file...' : 'Uploading...'}</p>
                 )}
-                {resumeStatus === 'done' && <p style={{ marginTop: 16, fontSize: 13, color: '#34d399' }}>Resume uploaded. You can proceed to the next step.</p>}
+                {resumeStatus === 'done' && <p style={{ marginTop: 16, fontSize: 13, color: '#6366f1' }}>Resume uploaded. You can proceed to the next step.</p>}
                 {resumeStatus === 'error' && <p style={{ marginTop: 16, fontSize: 13, color: '#f87171' }}>{resumeError}</p>}
                 {resumeUrl && (
-                  <p style={{ marginTop: 14, fontSize: 13, color: '#64748b' }}>Saved resume ready to use: <a href={resumeUrl} target="_blank" rel="noreferrer" style={{ color: '#10b981' }}>View file</a></p>
+                  <p style={{ marginTop: 14, fontSize: 13, color: '#64748b' }}>Saved resume ready to use: <a href={resumeUrl} target="_blank" rel="noreferrer" style={{ color: '#6366f1' }}>View file</a></p>
                 )}
               </div>
             )}
@@ -172,8 +172,8 @@ export default function OnboardingPage() {
             {step === 3 && (
               <div style={{ padding: 24, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20 }}>
-                  <div style={{ width: 46, height: 46, borderRadius: 14, background: 'rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CheckCircle size={26} color="#10b981" />
+                  <div style={{ width: 46, height: 46, borderRadius: 14, background: 'rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CheckCircle size={26} color="#6366f1" />
                   </div>
                   <div>
                     <h2 style={{ fontSize: 24, fontWeight: 700, color: '#f1f5f9' }}>You're ready to apply</h2>
@@ -188,13 +188,13 @@ export default function OnboardingPage() {
                     <p style={{ fontSize: 14, color: '#cbd5e1' }}>Bio and skills saved: <strong style={{ color: '#f1f5f9' }}>{form.bio && form.skills ? 'Yes' : 'Pending'}</strong></p>
                   </div>
                 </div>
-                <button type="button" onClick={() => navigate('/jobs')} style={{ marginTop: 24, width: '100%', padding: '14px 0', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                <button type="button" onClick={() => navigate('/jobs')} style={{ marginTop: 24, width: '100%', padding: '14px 0', borderRadius: 12, background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', border: 'none', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                   Go browse jobs
                 </button>
               </div>
             )}
 
-            {message && <p style={{ marginTop: 16, fontSize: 13, color: '#34d399' }}>{message}</p>}
+            {message && <p style={{ marginTop: 16, fontSize: 13, color: '#6366f1' }}>{message}</p>}
 
             <div style={{ display: 'flex', gap: 12, marginTop: 24, flexWrap: 'wrap' }}>
               {step > 1 && (
@@ -203,11 +203,11 @@ export default function OnboardingPage() {
                 </button>
               )}
               {step < 3 ? (
-                <button type="button" onClick={() => step === 1 ? setStep(2) : handleSaveProfile()} style={{ flex: '1', padding: '13px 0', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-                  {step === 1 ? (resumeUrl || resumeStatus === 'done' ? 'Continue →' : 'Skip to profile') : saving ? 'Saving…' : 'Save and continue'}
+                <button type="button" onClick={() => step === 1 ? setStep(2) : handleSaveProfile()} style={{ flex: '1', padding: '13px 0', borderRadius: 12, background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+                  {step === 1 ? (resumeUrl || resumeStatus === 'done' ? 'Continue →' : 'Skip to profile') : saving ? 'Saving...' : 'Save and continue'}
                 </button>
               ) : (
-                <button type="button" onClick={() => navigate('/jobs')} style={{ flex: '1', padding: '13px 0', borderRadius: 12, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+                <button type="button" onClick={() => navigate('/jobs')} style={{ flex: '1', padding: '13px 0', borderRadius: 12, background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', border: 'none', fontWeight: 700, cursor: 'pointer' }}>
                   Start applying
                 </button>
               )}
@@ -219,7 +219,7 @@ export default function OnboardingPage() {
             <ul style={{ listStyle: 'none', display: 'grid', gap: 14, padding: 0, margin: 0 }}>
               {['Resume uploaded', 'Phone number added', 'Professional summary written', 'Top skills selected', 'Ready to submit applications'].map(item => (
                 <li key={item} style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#cbd5e1' }}>
-                  <CheckCircle size={16} color="#10b981" />
+                  <CheckCircle size={16} color="#6366f1" />
                   {item}
                 </li>
               ))}

@@ -98,7 +98,7 @@ export default function ProfilePage() {
       }
 
       if (!resumeText.trim() || resumeText.trim().length < 30) {
-        throw new Error('No readable text found in this PDF. It may be a scanned image — please fill your profile manually.')
+        throw new Error('No readable text found in this PDF. It may be a scanned image - please fill your profile manually.')
       }
 
       // ── Step 2: Upload PDF to Supabase Storage ────────────────────────────
@@ -163,7 +163,7 @@ export default function ProfilePage() {
     setReviewFeedback(null)
 
     if (!resumeUrl) {
-      setReviewError('Upload your resume first to receive AI feedback.')
+      setReviewError('Upload your resume first to receive feedback.')
       setReviewStatus('error')
       return
     }
@@ -240,7 +240,7 @@ export default function ProfilePage() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
           <div>
-            <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>My Account</p>
+            <p style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>My Account</p>
             <h1 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.5px' }}>Profile</h1>
             <p style={{ fontSize: 13, color: '#64748b', marginTop: 6, maxWidth: 560 }}>
               Complete your profile to maximise match quality, improve cover letters, and make every application feel polished.
@@ -255,7 +255,7 @@ export default function ProfilePage() {
           <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 14, flexWrap: 'wrap' }}>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 6 }}>Profile completeness</p>
+                <p style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 6 }}>Profile completeness</p>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9' }}>{completionPercent}% ready to apply</h2>
               </div>
               <div style={{ textAlign: 'right' }}>
@@ -263,32 +263,32 @@ export default function ProfilePage() {
               </div>
             </div>
             <div style={{ width: '100%', height: 10, borderRadius: 999, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
-              <div style={{ width: `${completionPercent}%`, height: '100%', background: 'linear-gradient(135deg, #059669, #10b981)' }} />
+              <div style={{ width: `${completionPercent}%`, height: '100%', background: 'linear-gradient(135deg, #6366f1, #6366f1)' }} />
             </div>
           </div>
         </div>
 
         {/* ── Resume Upload ── */}
         <div style={{
-          background: 'linear-gradient(135deg, rgba(16,185,129,0.06), rgba(5,150,105,0.03))',
-          border: '1px solid rgba(16,185,129,0.18)',
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.06), rgba(99,102,241,0.03))',
+          border: '1px solid rgba(99,102,241,0.18)',
           borderRadius: 16, padding: 24, marginBottom: 16,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Sparkles size={16} color="#10b981" />
+            <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Sparkles size={16} color="#6366f1" />
             </div>
             <div>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9' }}>AI Resume Auto-Fill</h2>
-              <p style={{ fontSize: 12, color: '#64748b' }}>Upload your CV and Claude will fill your profile automatically</p>
+              <h2 style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9' }}>Resume Auto-Fill</h2>
+              <p style={{ fontSize: 12, color: '#64748b' }}>Upload your CV and the system can suggest profile fields automatically.</p>
             </div>
           </div>
 
           {/* Saved resume link */}
           {resumeUrl && resumeStatus !== 'error' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', marginBottom: 12 }}>
-              <FileText size={14} color="#10b981" />
-              <span style={{ fontSize: 13, color: '#34d399', flex: 1 }}>View current resume</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 14px', borderRadius: 9, background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', marginBottom: 12 }}>
+              <FileText size={14} color="#6366f1" />
+              <span style={{ fontSize: 13, color: '#6366f1', flex: 1 }}>View current resume</span>
               <a href={resumeUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, color: '#64748b', textDecoration: 'none' }}>
                 <ExternalLink size={11} /> Open
               </a>
@@ -300,16 +300,16 @@ export default function ProfilePage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 9, background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)', marginBottom: 12 }}>
               <Loader size={13} color="#f59e0b" style={{ animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
               <span style={{ fontSize: 13, color: '#fcd34d' }}>
-                {{ reading: 'Reading PDF…', uploading: 'Uploading to secure storage…', parsing: 'AI is parsing your resume…' }[resumeStatus]}
+                {{ reading: 'Reading PDF...', uploading: 'Uploading to secure storage...', parsing: 'Parsing your resume...' }[resumeStatus]}
               </span>
             </div>
           )}
 
           {/* Done */}
           {resumeStatus === 'done' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 9, background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', marginBottom: 12 }}>
-              <CheckCircle size={13} color="#10b981" />
-              <span style={{ fontSize: 13, color: '#34d399' }}>Fields auto-filled — review below and click Save Profile.</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 9, background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', marginBottom: 12 }}>
+              <CheckCircle size={13} color="#6366f1" />
+              <span style={{ fontSize: 13, color: '#6366f1' }}>Fields auto-filled - review below and click Save Profile.</span>
             </div>
           )}
 
@@ -331,10 +331,10 @@ export default function ProfilePage() {
                 display: 'flex', alignItems: 'center', gap: 8,
                 padding: '10px 18px', borderRadius: 9, border: 'none',
                 cursor: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'not-allowed' : 'pointer',
-                background: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'rgba(255,255,255,0.04)' : 'linear-gradient(135deg, #059669, #10b981)',
+                background: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'rgba(255,255,255,0.04)' : 'linear-gradient(135deg, #6366f1, #6366f1)',
                 color: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? '#475569' : 'white',
                 fontSize: 13, fontWeight: 700,
-                boxShadow: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'none' : '0 0 16px rgba(16,185,129,0.25)',
+                boxShadow: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'none' : '0 0 16px rgba(99,102,241,0.25)',
               }}
             >
               <Upload size={14} />
@@ -357,7 +357,7 @@ export default function ProfilePage() {
           {reviewStatus === 'reviewing' && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, padding: '10px 14px', borderRadius: 9, background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
               <Loader size={13} color="#f59e0b" style={{ animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
-              <span style={{ fontSize: 13, color: '#fcd34d' }}>Reviewing your resume with AI…</span>
+              <span style={{ fontSize: 13, color: '#fcd34d' }}>Reviewing your resume...</span>
             </div>
           )}
           {reviewStatus === 'error' && reviewError && (
@@ -370,16 +370,16 @@ export default function ProfilePage() {
 
         {reviewFeedback && (
           <div style={{ position: 'fixed', inset: 0, zIndex: 210, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-            <div style={{ width: '100%', maxWidth: 760, maxHeight: '90vh', overflowY: 'auto', background: '#071620', borderRadius: 24, border: '1px solid rgba(16,185,129,0.2)', padding: 28, position: 'relative' }}>
+            <div style={{ width: '100%', maxWidth: 760, maxHeight: '90vh', overflowY: 'auto', background: '#071620', borderRadius: 24, border: '1px solid rgba(99,102,241,0.2)', padding: 28, position: 'relative' }}>
               <button onClick={() => { setReviewFeedback(null); setReviewStatus(null); setReviewError('') }} style={{ position: 'absolute', top: 18, right: 18, border: 'none', background: 'none', color: '#94a3b8', cursor: 'pointer' }}>
                 <X size={18} />
               </button>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-                <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(16,185,129,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Sparkles size={22} color="#10b981" />
+                <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(99,102,241,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Sparkles size={22} color="#6366f1" />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9', marginBottom: 4 }}>AI Resume Review</h2>
+                  <h2 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9', marginBottom: 4 }}>Resume Review</h2>
                   <p style={{ fontSize: 13, color: '#94a3b8' }}>Clear feedback on what is working and what to improve.</p>
                 </div>
               </div>
@@ -393,7 +393,7 @@ export default function ProfilePage() {
                   </div>
                 )
               ))}
-              <button type="button" onClick={() => { setReviewFeedback(null); setReviewStatus(null); setReviewError('') }} style={{ padding: '12px 22px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              <button type="button" onClick={() => { setReviewFeedback(null); setReviewStatus(null); setReviewError('') }} style={{ padding: '12px 22px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                 Close review
               </button>
             </div>
@@ -459,7 +459,7 @@ export default function ProfilePage() {
           {/* ── About You ── */}
           <Section icon={Heart} title="About You">
             <div>
-              <label style={labelStyle}>Short bio <Hint>2–3 sentences about yourself for the AI to use</Hint></label>
+              <label style={labelStyle}>Short bio <Hint>2–3 sentences about yourself</Hint></label>
               <textarea value={form.bio} onChange={e => update('bio', e.target.value)} rows={3}
                 placeholder="e.g. I'm a final-year CS student at LUMS with a passion for building scalable web applications. I've led two student societies and interned at a Series A startup..."
                 style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }} />
@@ -491,7 +491,7 @@ export default function ProfilePage() {
           {/* ── Work Experience ── */}
           <Section icon={BookOpen} title="Work Experience">
             <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16 }}>
-              Previous internships or jobs — used to personalise your cover letters significantly.
+              Previous internships or jobs - used to personalise your cover letters significantly.
             </p>
 
             {workExp.length > 0 && (
@@ -551,13 +551,13 @@ export default function ProfilePage() {
           {/* Save */}
           <button type="submit" disabled={saving} style={{
             width: '100%', padding: '14px 0', borderRadius: 11, border: 'none',
-            background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #059669, #10b981)',
+            background: saving ? 'rgba(255,255,255,0.06)' : 'linear-gradient(135deg, #6366f1, #6366f1)',
             color: saving ? '#475569' : 'white',
             fontSize: 15, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            boxShadow: saving ? 'none' : '0 0 24px rgba(16,185,129,0.3)',
+            boxShadow: saving ? 'none' : '0 0 24px rgba(99,102,241,0.3)',
           }}>
-            {saving ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Saving…</> : <><Save size={15} /> Save Profile</>}
+            {saving ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Saving...</> : <><Save size={15} /> Save Profile</>}
           </button>
         </form>
       </div>
@@ -572,8 +572,8 @@ function Section({ icon: Icon, title, children }) {
   return (
     <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 24, marginBottom: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-        <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Icon size={16} color="#10b981" />
+        <div style={{ width: 34, height: 34, borderRadius: 9, background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icon size={16} color="#6366f1" />
         </div>
         <h2 style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9' }}>{title}</h2>
       </div>
@@ -592,7 +592,7 @@ function Field({ label, value, onChange, placeholder, required }) {
 }
 
 function Hint({ children }) {
-  return <span style={{ fontSize: 11, color: '#475569', marginLeft: 6, fontWeight: 400 }}>— {children}</span>
+  return <span style={{ fontSize: 11, color: '#475569', marginLeft: 6, fontWeight: 400 }}>- {children}</span>
 }
 
 function Toast({ toast }) {
@@ -600,9 +600,9 @@ function Toast({ toast }) {
     <div style={{
       position: 'fixed', top: 20, right: 20, zIndex: 200,
       padding: '12px 20px', borderRadius: 10,
-      background: toast.type === 'success' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.08)',
-      border: `1px solid ${toast.type === 'success' ? 'rgba(16,185,129,0.4)' : 'rgba(239,68,68,0.25)'}`,
-      color: toast.type === 'success' ? '#34d399' : '#f87171',
+      background: toast.type === 'success' ? 'rgba(99,102,241,0.15)' : 'rgba(239,68,68,0.08)',
+      border: `1px solid ${toast.type === 'success' ? 'rgba(99,102,241,0.4)' : 'rgba(239,68,68,0.25)'}`,
+      color: toast.type === 'success' ? '#6366f1' : '#f87171',
       fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8,
       boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
     }}>
@@ -615,7 +615,7 @@ function Toast({ toast }) {
 function Spinner() {
   return (
     <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Loader size={24} color="#10b981" style={{ animation: 'spin 0.8s linear infinite' }} />
+      <Loader size={24} color="#6366f1" style={{ animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
@@ -634,7 +634,7 @@ const ghostBtn = {
 }
 const addBtn = active => ({
   padding: '0 16px', borderRadius: 9, border: 'none', cursor: active ? 'pointer' : 'not-allowed',
-  background: active ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.04)',
-  color: active ? '#10b981' : '#475569',
+  background: active ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.04)',
+  color: active ? '#6366f1' : '#475569',
   display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600,
 })

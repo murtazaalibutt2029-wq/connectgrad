@@ -53,7 +53,7 @@ export function generateCoverLetter({ job, name, university, degree, motivation 
     : ''
 
   return `${name}
-${university} — ${degree}
+${university} - ${degree}
 ${today}
 
 Hiring Manager
@@ -62,11 +62,11 @@ ${city}
 
 Dear Hiring Manager,
 
-Re: Application for ${job.title} — ${job.company}
+Re: Application for ${job.title} - ${job.company}
 
 I am writing to express my strong interest in the ${roleLabel} of ${job.title} at ${job.company}. As a ${degree} student at ${university}, I have cultivated a solid foundation in ${fieldPhrase}, and I am eager to bring that expertise to a team with ${job.company}'s reputation for excellence.
 
-${motivationSentence}${job.company} strikes me as an organisation where I can make a meaningful contribution from day one while continuing to grow. The scope of the role — particularly the focus on ${job.tags.slice(0, 2).join(' and ')} — aligns closely with both my academic background and the direction I want to take my career.
+${motivationSentence}${job.company} strikes me as an organisation where I can make a meaningful contribution from day one while continuing to grow. The scope of the role - particularly the focus on ${job.tags.slice(0, 2).join(' and ')} - aligns closely with both my academic background and the direction I want to take my career.
 
 Through my studies and personal projects, I have developed hands-on experience with ${skills}, ${skillConnector}. I am a self-starter who thrives in collaborative, high-standards environments, and I take pride in producing work that is thoughtful, well-executed, and delivered on time.
 
@@ -77,5 +77,5 @@ Thank you for taking the time to consider my application. I would welcome the op
 Yours sincerely,
 
 ${name}
-${degree} — ${university}`
+${degree} - ${university}`
 }

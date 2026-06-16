@@ -1,21 +1,42 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Menu, X, GraduationCap, LayoutDashboard, User, LogOut } from 'lucide-react'
+import { Menu, X, Bell, LayoutDashboard, LogOut } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import Logo from './Logo'
 
 const navLinks = [
   { label: 'Home',             to: '/' },
   { label: 'Jobs & Internships', to: '/jobs' },
-  { label: 'For Employers',    to: '/employers' },
+  { label: 'For Employers',    to: '/employer/signup' },
   { label: 'Resources',        to: '/resources' },
 ]
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [unread, setUnread] = useState(0)
   const { pathname } = useLocation()
   const navigate     = useNavigate()
   const { session, profile } = useAuth()
+
+  useEffect(() => {
+    if (!session) {
+      setUnread(0)
+      return
+    }
+
+    const loadUnread = async () => {
+      const { count, error } = await supabase
+        .from('notifications')
+        .select('id', { count: 'exact', head: true })
+        .eq('recipient_id', session.user.id)
+        .eq('is_read', false)
+
+      if (!error) setUnread(count || 0)
+    }
+
+    loadUnread()
+  }, [session])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -28,25 +49,14 @@ export default function Navbar() {
     <nav style={{
       background: 'rgba(3,10,26,0.95)',
       backdropFilter: 'blur(12px)',
-      borderBottom: '1px solid rgba(16,185,129,0.15)',
+      borderBottom: '1px solid rgba(99,102,241,0.15)',
       position: 'sticky', top: 0, zIndex: 50,
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 68 }}>
 
           {/* Logo */}
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-            <div style={{
-              width: 38, height: 38, borderRadius: 10,
-              background: 'linear-gradient(135deg, #059669, #10b981)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <GraduationCap size={22} color="white" />
-            </div>
-            <span style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', letterSpacing: '-0.3px' }}>
-              Connect<span style={{ color: '#10b981' }}>Grad</span>
-            </span>
-          </Link>
+          <Logo />
 
           {/* Desktop nav links */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }} className="desktop-nav">
@@ -54,8 +64,8 @@ export default function Navbar() {
               <Link key={link.label} to={link.to} style={{
                 padding: '8px 14px', borderRadius: 8, fontSize: 14, fontWeight: 500,
                 textDecoration: 'none',
-                color: pathname === link.to ? '#10b981' : '#94a3b8',
-                background: pathname === link.to ? 'rgba(16,185,129,0.1)' : 'transparent',
+                color: pathname === link.to ? '#6366f1' : '#94a3b8',
+                background: pathname === link.to ? 'rgba(99,102,241,0.1)' : 'transparent',
                 transition: 'all 0.2s',
               }}>
                 {link.label}
@@ -69,26 +79,40 @@ export default function Navbar() {
               display: 'flex', alignItems: 'center', gap: 6,
               padding: '8px 14px', borderRadius: 8, fontSize: 13, fontWeight: 500,
               textDecoration: 'none',
-              color: pathname === '/tracker' ? '#10b981' : '#64748b',
-              background: pathname === '/tracker' ? 'rgba(16,185,129,0.1)' : 'transparent',
-              border: '1px solid rgba(255,255,255,0.07)',
+              color: pathname === '/tracker' ? '#f59e0b' : '#94a3b8',
+              background: pathname === '/tracker' ? 'rgba(245,158,11,0.14)' : 'transparent',
+              border: '1px solid rgba(255,255,255,0.08)',
             }}>
               <LayoutDashboard size={14} /> Tracker
             </Link>
 
             {session ? (
               <>
+                <Link to="/tracker" style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '8px 12px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.04)', color: '#94a3b8', textDecoration: 'none',
+                  position: 'relative', fontSize: 13,
+                }}>
+                  <Bell size={16} />
+                  Notifications
+                  {unread > 0 && (
+                    <span style={{ position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, borderRadius: 999, background: '#f59e0b', color: '#08101f', fontSize: 11, fontWeight: 700, display: 'grid', placeItems: 'center', padding: '0 5px' }}>
+                      {unread}
+                    </span>
+                  )}
+                </Link>
                 <Link to="/profile" style={{
                   display: 'flex', alignItems: 'center', gap: 7,
                   padding: '7px 14px', borderRadius: 8, fontSize: 13, fontWeight: 500,
                   textDecoration: 'none',
-                  color: pathname === '/profile' ? '#10b981' : '#94a3b8',
-                  background: pathname === '/profile' ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.04)',
+                  color: pathname === '/profile' ? '#c49b30' : '#94a3b8',
+                  background: pathname === '/profile' ? 'rgba(196,155,48,0.12)' : 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.08)',
                 }}>
                   <div style={{
                     width: 22, height: 22, borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #059669, #10b981)',
+                    background: 'linear-gradient(135deg, #3949a6, #1e2a4f)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 11, fontWeight: 700, color: 'white', flexShrink: 0,
                   }}>
@@ -101,7 +125,7 @@ export default function Navbar() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 5,
                     padding: '8px 12px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                    background: 'transparent', color: '#64748b', fontSize: 13,
+                    background: 'transparent', color: '#94a3b8', fontSize: 13,
                   }}
                   title="Sign out"
                 >
@@ -112,18 +136,18 @@ export default function Navbar() {
               <>
                 <Link to="/login" style={{
                   padding: '8px 18px', borderRadius: 8, fontSize: 14, fontWeight: 500,
-                  textDecoration: 'none', color: '#94a3b8',
-                  border: '1px solid rgba(148,163,184,0.2)',
+                  textDecoration: 'none', color: '#f59e0b',
+                  border: '1px solid rgba(245,158,11,0.2)',
                 }}>
                   Log in
                 </Link>
                 <Link to="/signup" style={{
                   padding: '8px 18px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                   textDecoration: 'none', color: 'white',
-                  background: 'linear-gradient(135deg, #059669, #10b981)',
-                  boxShadow: '0 0 20px rgba(16,185,129,0.3)',
+                  background: 'linear-gradient(135deg, #6366f1, #1e40af)',
+                  boxShadow: '0 0 20px rgba(99,102,241,0.25)',
                 }}>
-                  Sign up free
+                  Sign up
                 </Link>
               </>
             )}
@@ -145,7 +169,7 @@ export default function Navbar() {
             {navLinks.map(link => (
               <Link key={link.label} to={link.to} onClick={() => setMobileOpen(false)} style={{
                 display: 'block', padding: '10px 0', fontSize: 15, fontWeight: 500,
-                textDecoration: 'none', color: pathname === link.to ? '#10b981' : '#94a3b8',
+                textDecoration: 'none', color: pathname === link.to ? '#6366f1' : '#94a3b8',
               }}>
                 {link.label}
               </Link>
@@ -172,15 +196,15 @@ export default function Navbar() {
                 <>
                   <Link to="/login" style={{
                     flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14, fontWeight: 500,
-                    textDecoration: 'none', color: '#94a3b8', textAlign: 'center',
-                    border: '1px solid rgba(148,163,184,0.2)',
+                    textDecoration: 'none', color: '#f59e0b', textAlign: 'center',
+                    border: '1px solid rgba(245,158,11,0.2)',
                   }}>
                     Log in
                   </Link>
                   <Link to="/signup" style={{
                     flex: 1, padding: '10px 0', borderRadius: 8, fontSize: 14, fontWeight: 600,
                     textDecoration: 'none', color: 'white', textAlign: 'center',
-                    background: 'linear-gradient(135deg, #059669, #10b981)',
+                    background: 'linear-gradient(135deg, #6366f1, #1e40af)',
                   }}>
                     Sign up
                   </Link>

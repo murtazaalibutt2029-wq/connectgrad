@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, Calendar, ArrowRight, Trash2, Briefcase, ChevronRight } from 'lucide-react'
+import { Bell, MapPin, Calendar, ArrowRight, Trash2, Briefcase, ChevronRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import { getApplications, updateStatus, removeApplication } from '../utils/applications'
@@ -8,10 +8,10 @@ import { getApplications, updateStatus, removeApplication } from '../utils/appli
 const STATUSES = ['Applied', 'Under Review', 'Interview', 'Offer']
 
 const COLUMN_STYLES = {
-  Applied:      { accent: '#3b82f6', bg: 'rgba(59,130,246,0.08)',  border: 'rgba(59,130,246,0.2)',  badge: 'rgba(59,130,246,0.15)',  text: '#93c5fd' },
-  'Under Review': { accent: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)', badge: 'rgba(245,158,11,0.15)', text: '#fcd34d' },
-  Interview:    { accent: '#8b5cf6', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.2)', badge: 'rgba(139,92,246,0.15)', text: '#c4b5fd' },
-  Offer:        { accent: '#10b981', bg: 'rgba(16,185,129,0.08)',  border: 'rgba(16,185,129,0.2)',  badge: 'rgba(16,185,129,0.15)',  text: '#34d399' },
+  Applied:        { accent: '#6366f1', bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.24)', badge: 'rgba(99,102,241,0.18)', text: '#c7d2fe' },
+  'Under Review': { accent: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.24)', badge: 'rgba(245,158,11,0.18)', text: '#fcd34d' },
+  Interview:      { accent: '#8b5cf6', bg: 'rgba(139,92,246,0.12)', border: 'rgba(139,92,246,0.24)', badge: 'rgba(139,92,246,0.18)', text: '#ddd6fe' },
+  Offer:          { accent: '#f59e0b', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.24)', badge: 'rgba(245,158,11,0.18)', text: '#fcd34d' },
 }
 
 function formatDate(iso) {
@@ -101,7 +101,7 @@ function ApplicationCard({ app, onMove, onRemove, onSaveNote, isLocal }) {
             <div>
               {reminderDays >= 14
                 ? 'It has been over two weeks since you applied. Consider sending a polite follow-up email today.'
-                : 'If you haven’t heard back soon, plan a follow-up message to the recruiter.'}
+                : "If you haven't heard back soon, plan a follow-up message to the recruiter."}
             </div>
           </div>
         )}
@@ -122,8 +122,8 @@ function ApplicationCard({ app, onMove, onRemove, onSaveNote, isLocal }) {
         ) : (
           <div style={{
             flex: '1 1 140px', padding: '10px 14px', borderRadius: 10,
-            background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)',
-            color: '#34d399', fontSize: 13, fontWeight: 700, textAlign: 'center',
+            background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.2)',
+            color: '#6366f1', fontSize: 13, fontWeight: 700, textAlign: 'center',
           }}>
             Offer received
           </div>
@@ -180,6 +180,7 @@ export default function TrackerPage() {
   const { session, loading: authLoading } = useAuth()
   const [dbApps, setDbApps] = useState([])
   const [localApps, setLocalApps] = useState(() => getApplications().map(item => ({ ...item, isLocal: true, notes: item.notes || '' })))
+  const [notifications, setNotifications] = useState([])
   const [loadingApps, setLoadingApps] = useState(true)
 
   useEffect(() => {
@@ -220,6 +221,32 @@ export default function TrackerPage() {
 
     loadApplications()
   }, [session])
+
+  useEffect(() => {
+    if (!session) return
+
+    const loadNotifications = async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('id, title, message, is_read, created_at')
+        .eq('recipient_id', session.user.id)
+        .order('created_at', { ascending: false })
+
+      if (!error) setNotifications(data || [])
+    }
+
+    loadNotifications()
+  }, [session])
+
+  const markNotificationRead = async id => {
+    await supabase.from('notifications').update({ is_read: true }).eq('id', id)
+    setNotifications(prev => prev.map(note => note.id === id ? { ...note, is_read: true } : note))
+  }
+
+  const markAllNotificationsRead = async () => {
+    await supabase.from('notifications').update({ is_read: true }).eq('recipient_id', session.user.id)
+    setNotifications(prev => prev.map(note => ({ ...note, is_read: true })))
+  }
 
   const allApps = useMemo(() => [...dbApps, ...localApps], [dbApps, localApps])
 
@@ -272,7 +299,7 @@ export default function TrackerPage() {
   if (authLoading || loadingApps) {
     return (
       <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ fontSize: 14, color: '#94a3b8' }}>Loading your application tracker…</div>
+        <div style={{ fontSize: 14, color: '#94a3b8' }}>Loading your application tracker...</div>
       </div>
     )
   }
@@ -283,18 +310,18 @@ export default function TrackerPage() {
         <div style={{ maxWidth: 1300, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
             <div style={{ maxWidth: 660 }}>
-              <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Application Tracker</p>
+              <p style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 10 }}>Application Tracker</p>
               <h1 style={{ fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.8px', marginBottom: 12 }}>My Applications</h1>
               <p style={{ fontSize: 14, color: '#64748b', lineHeight: 1.7 }}>
                 Track every application with real Supabase data and keep quick notes, reminders, and status updates in one place.
               </p>
               <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 12 }}>
                 {totalApplications === 0
-                  ? 'No applications yet — submit a job from a listing and it will appear here automatically.'
-                  : `You’re tracking ${totalApplications} application${totalApplications !== 1 ? 's' : ''} across ${STATUSES.length} stages.`}
+                  ? 'No applications yet - submit a job from a listing and it will appear here automatically.'
+                  : `You're tracking ${totalApplications} application${totalApplications !== 1 ? 's' : ''} across ${STATUSES.length} stages.`}
               </p>
             </div>
-            <Link to="/jobs" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', textDecoration: 'none', fontWeight: 700, fontSize: 13, boxShadow: '0 0 20px rgba(16,185,129,0.3)' }}>
+            <Link to="/jobs" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #1e40af)', color: 'white', textDecoration: 'none', fontWeight: 700, fontSize: 13, boxShadow: '0 0 20px rgba(99,102,241,0.25)' }}>
               Browse more jobs <ArrowRight size={14} />
             </Link>
           </div>
@@ -316,12 +343,47 @@ export default function TrackerPage() {
         </div>
       </div>
 
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '24px 24px 0', display: 'grid', gap: 24 }}>
+        <section style={{ padding: 24, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
+            <div>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#c49b30', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Notifications</p>
+              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Recent updates</h2>
+              <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 6 }}>Messages from employers, application status updates, and tracking reminders all appear here.</p>
+            </div>
+            <button onClick={markAllNotificationsRead} style={{ padding: '10px 18px', borderRadius: 10, border: '1px solid rgba(245,158,11,0.2)', background: 'rgba(245,158,11,0.12)', color: 'white', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
+              Mark all read
+            </button>
+          </div>
+
+          {notifications.length === 0 ? (
+            <div style={{ marginTop: 18, color: '#64748b', fontSize: 13 }}>No updates yet. Any notifications from employers will show here.</div>
+          ) : (
+            <div style={{ display: 'grid', gap: 12, marginTop: 18 }}>
+              {notifications.slice(0, 4).map(note => (
+                <button key={note.id} type="button" onClick={() => markNotificationRead(note.id)} style={{ textAlign: 'left', width: '100%', padding: '14px 16px', borderRadius: 14, background: note.is_read ? 'rgba(255,255,255,0.02)' : 'rgba(196,155,48,0.12)', border: `1px solid ${note.is_read ? 'rgba(255,255,255,0.08)' : 'rgba(196,155,48,0.2)'}`, color: '#f1f5f9', cursor: 'pointer' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                    <div>
+                      <p style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>{note.title}</p>
+                      <p style={{ margin: '8px 0 0', fontSize: 13, color: '#94a3b8' }}>{note.message}</p>
+                    </div>
+                    <div style={{ minWidth: 18, height: 18, borderRadius: 999, background: note.is_read ? 'rgba(255,255,255,0.08)' : '#f59e0b', color: note.is_read ? '#94a3b8' : '#08101f', fontSize: 11, fontWeight: 700, display: 'grid', placeItems: 'center' }}>
+                      {note.is_read ? '✓' : 'New'}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+
       <div style={{ maxWidth: 1300, margin: '0 auto', padding: '32px 24px 80px', display: 'grid', gap: 24 }}>
         {hasDbApps && (
           <section style={{ padding: 24, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 18 }}>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Connected applications</p>
+                <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>Connected applications</p>
                 <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Applications saved in your account</h2>
               </div>
               <p style={{ fontSize: 13, color: '#94a3b8', maxWidth: 480, margin: 0 }}>
@@ -340,7 +402,7 @@ export default function TrackerPage() {
           <section style={{ padding: 24, borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 18 }}>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 700, color: '#7c3aed', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>External applications</p>
+                <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>External applications</p>
                 <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f1f5f9', margin: 0 }}>Manual entries and external jobs</h2>
               </div>
               <p style={{ fontSize: 13, color: '#94a3b8', maxWidth: 480, margin: 0 }}>
@@ -361,7 +423,7 @@ export default function TrackerPage() {
             <p style={{ fontSize: 14, color: '#94a3b8', marginBottom: 20 }}>
               Submit an application from a job detail page or add an external entry. Once you have applications, this page will show company, role, date, status, and private notes.
             </p>
-            <Link to="/jobs" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', textDecoration: 'none', fontWeight: 700 }}>
+            <Link to="/jobs" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 20px', borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', textDecoration: 'none', fontWeight: 700 }}>
               Find jobs to track <ArrowRight size={14} />
             </Link>
           </div>

@@ -64,12 +64,12 @@ export default function EmployerSignupPage() {
     return (
       <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
         <div style={{ textAlign: 'center', maxWidth: 520 }}>
-          <div style={{ width: 90, height: 90, borderRadius: '50%', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(16,185,129,0.15)', border: '2px solid rgba(16,185,129,0.3)' }}>
-            <CheckCircle size={36} color="#10b981" />
+          <div style={{ width: 90, height: 90, borderRadius: '50%', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(99,102,241,0.15)', border: '2px solid rgba(99,102,241,0.3)' }}>
+            <CheckCircle size={36} color="#6366f1" />
           </div>
           <h2 style={{ fontSize: 28, fontWeight: 700, color: '#f1f5f9', marginBottom: 12 }}>Employer account created</h2>
           <p style={{ fontSize: 15, color: '#94a3b8', marginBottom: 28 }}>Your employer profile is ready. You can continue to the dashboard to post your first role and start reviewing candidates.</p>
-          <Link to="/employer/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 32px', borderRadius: 10, background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontWeight: 700, textDecoration: 'none' }}>
+          <Link to="/employer/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 32px', borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', fontWeight: 700, textDecoration: 'none' }}>
             Go to employer dashboard <ArrowRight size={16} />
           </Link>
         </div>
@@ -81,7 +81,7 @@ export default function EmployerSignupPage() {
     <div style={{ minHeight: '100vh', background: '#030a1a', padding: '60px 24px 80px' }}>
       <div style={{ maxWidth: 680, margin: '0 auto' }}>
         <div style={{ marginBottom: 36, textAlign: 'center' }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Employer signup</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Employer signup</p>
           <h1 style={{ fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 800, color: '#f1f5f9', marginBottom: 14 }}>Hire smarter with ConnectGrad</h1>
           <p style={{ fontSize: 15, color: '#94a3b8', maxWidth: 580, margin: '0 auto' }}>Create an employer account to post jobs, connect with students, and manage applications from your dashboard.</p>
         </div>
@@ -145,13 +145,13 @@ export default function EmployerSignupPage() {
             </div>
           </div>
 
-          <button type="submit" disabled={loading} style={{ padding: '14px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
-            {loading ? 'Creating account…' : 'Create employer account'}
+          <button type="submit" disabled={loading} style={{ padding: '14px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
+            {loading ? 'Creating account...' : 'Create employer account'}
           </button>
         </form>
 
         <p style={{ marginTop: 22, fontSize: 13, color: '#64748b', textAlign: 'center' }}>
-          Already have an employer account? <Link to="/login" style={{ color: '#10b981' }}>Log in</Link>
+          Already have an employer account? <Link to="/login" style={{ color: '#6366f1' }}>Log in</Link>
         </p>
       </div>
     </div>

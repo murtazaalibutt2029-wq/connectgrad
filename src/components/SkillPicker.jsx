@@ -5,7 +5,7 @@ import { commonSkills } from '../utils/skills'
 const pillStyle = {
   display: 'inline-flex', alignItems: 'center', gap: 6,
   padding: '6px 10px', borderRadius: 999,
-  background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)',
+  background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.2)',
   color: '#f1f5f9', fontSize: 13,
 }
 

@@ -1,18 +1,41 @@
 import { Link } from 'react-router-dom'
-import { GraduationCap, Share2, ExternalLink, AtSign, Mail } from 'lucide-react'
+import { Share2, ExternalLink, AtSign, Mail } from 'lucide-react'
+import Logo from './Logo'
 
 const footerLinks = {
-  'For Students': ['Browse Jobs', 'Internships', 'Career Resources', 'CV Builder', 'Interview Prep'],
-  'For Employers': ['Post a Job', 'Browse Talent', 'University Partnerships', 'Pricing'],
-  'Regions': ['Pakistan', 'United Kingdom', 'United States', 'Germany', 'Netherlands'],
-  'Company': ['About Us', 'Blog', 'Careers', 'Press', 'Contact'],
+  'For Students': [
+    { label: 'Browse Jobs', to: '/jobs' },
+    { label: 'Internships', to: '/jobs?type=internship' },
+    { label: 'Career Resources', to: '/resources' },
+    { label: 'CV Builder', to: '/profile' },
+    { label: 'Interview Prep', to: '/resources' },
+  ],
+  'For Employers': [
+    { label: 'Post a Job', to: '/employer/signup' },
+    { label: 'Browse Talent', to: '/employer/signup' },
+    { label: 'University Partnerships', to: '/employer/signup' },
+    { label: 'Pricing', to: '/employer/signup' },
+  ],
+  'Regions': [
+    { label: 'Pakistan', to: '/jobs?region=Pakistan' },
+    { label: 'United Kingdom', to: '/jobs?region=UK' },
+    { label: 'United States', to: '/jobs?region=USA' },
+    { label: 'Germany', to: '/jobs?region=Germany' },
+    { label: 'Netherlands', to: '/jobs?region=Netherlands' },
+  ],
+  'Company': [
+    { label: 'About Us', to: '/about' },
+    { label: 'Blog', to: '/blog' },
+    { label: 'Careers', to: '/employer/signup' },
+    { label: 'Press', to: '/contact' },
+  ],
 }
 
 export default function Footer() {
   return (
     <footer style={{
       background: '#020818',
-      borderTop: '1px solid rgba(16,185,129,0.1)',
+      borderTop: '1px solid rgba(99,102,241,0.1)',
       paddingTop: 60,
       paddingBottom: 32,
     }}>
@@ -27,16 +50,7 @@ export default function Footer() {
           {/* Brand */}
           <div style={{ gridColumn: 'span 1' }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginBottom: 16 }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 9,
-                background: 'linear-gradient(135deg, #059669, #10b981)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <GraduationCap size={20} color="white" />
-              </div>
-              <span style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9' }}>
-                Connect<span style={{ color: '#10b981' }}>Grad</span>
-              </span>
+              <Logo mini={true} size={36} />
             </Link>
             <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.7, marginBottom: 20 }}>
               Connecting ambitious graduates with world-class opportunities across Pakistan, UK, USA and Europe.
@@ -60,15 +74,15 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([heading, links]) => (
             <div key={heading}>
-              <h4 style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>
+              <h4 style={{ fontSize: 12, fontWeight: 600, color: '#8b5cf6', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>
                 {heading}
               </h4>
               <ul style={{ listStyle: 'none' }}>
                 {links.map(link => (
-                  <li key={link} style={{ marginBottom: 10 }}>
-                    <a href="#" style={{ fontSize: 13, color: '#64748b', textDecoration: 'none' }}>
-                      {link}
-                    </a>
+                  <li key={link.label} style={{ marginBottom: 10 }}>
+                    <Link to={link.to} style={{ fontSize: 13, color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }}>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>

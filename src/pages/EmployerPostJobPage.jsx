@@ -59,12 +59,12 @@ export default function EmployerPostJobPage() {
     return (
       <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
         <div style={{ textAlign: 'center', maxWidth: 560 }}>
-          <div style={{ width: 90, height: 90, borderRadius: '50%', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(16,185,129,0.15)', border: '2px solid rgba(16,185,129,0.3)' }}>
-            <Check size={36} color="#10b981" />
+          <div style={{ width: 90, height: 90, borderRadius: '50%', margin: '0 auto 24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(99,102,241,0.15)', border: '2px solid rgba(99,102,241,0.3)' }}>
+            <Check size={36} color="#6366f1" />
           </div>
           <h2 style={{ fontSize: 28, fontWeight: 700, color: '#f1f5f9', marginBottom: 12 }}>Job posted successfully</h2>
           <p style={{ fontSize: 15, color: '#64748b', marginBottom: 28 }}>Your role is now saved to the employer dashboard and visible to students in the job feed.</p>
-          <button onClick={() => navigate('/employer/dashboard')} style={{ padding: '14px 26px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontWeight: 700, cursor: 'pointer' }}>
+          <button onClick={() => navigate('/employer/dashboard')} style={{ padding: '14px 26px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', fontWeight: 700, cursor: 'pointer' }}>
             Return to dashboard
           </button>
         </div>
@@ -76,7 +76,7 @@ export default function EmployerPostJobPage() {
     <div style={{ background: '#030a1a', minHeight: '100vh', padding: '60px 24px 80px' }}>
       <div style={{ maxWidth: 860, margin: '0 auto' }}>
         <div style={{ marginBottom: 34 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Post a job</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Post a job</p>
           <h1 style={{ fontSize: 'clamp(32px, 4vw, 44px)', fontWeight: 800, color: '#f1f5f9', marginBottom: 14 }}>Publish a new role for graduates</h1>
           <p style={{ fontSize: 15, color: '#94a3b8', maxWidth: 680 }}>Enter the job details below and reach students matched to your company profile.</p>
         </div>
@@ -152,14 +152,14 @@ export default function EmployerPostJobPage() {
               </div>
             </div>
 
-            <button type="submit" disabled={saving} style={{ padding: '14px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
-              {saving ? 'Posting job…' : 'Post job'}
+            <button type="submit" disabled={saving} style={{ padding: '14px 0', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #6366f1, #6366f1)', color: 'white', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
+              {saving ? 'Posting job...' : 'Post job'}
             </button>
           </form>
 
           <aside style={{ display: 'grid', gap: 18 }}>
             <div style={{ padding: 22, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 12 }}>Fast, employer-first posting</p>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 12 }}>Fast, employer-first posting</p>
               <p style={{ fontSize: 14, color: '#94a3b8', lineHeight: 1.8, marginBottom: 16 }}>Create a role that students can immediately understand and apply to. Your job posting will be surfaced to top applicants matched to your needs.</p>
               <ul style={{ listStyle: 'inside disc', paddingLeft: 14, color: '#94a3b8', lineHeight: 1.75, margin: 0 }}>
                 <li>Share clear expectations and candidate profile.</li>
@@ -169,8 +169,8 @@ export default function EmployerPostJobPage() {
             </div>
 
             <div style={{ padding: 22, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p style={{ fontSize: 12, fontWeight: 700, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 12 }}>Live preview</p>
-              <div style={{ borderRadius: 16, padding: 18, background: '#07141f', border: '1px solid rgba(16,185,129,0.1)' }}>
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 12 }}>Live preview</p>
+              <div style={{ borderRadius: 16, padding: 18, background: '#07141f', border: '1px solid rgba(99,102,241,0.1)' }}>
                 <p style={{ fontSize: 13, color: '#94a3b8', marginBottom: 10 }}>{form.type || 'Graduate Role'}</p>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>{form.title || 'Graduate Software Engineer'}</h2>
                 <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16 }}>{form.company || 'Company name'} · {form.region || 'Region'}</p>
@@ -185,7 +185,7 @@ export default function EmployerPostJobPage() {
                     <LinkIcon size={14} /> {form.external_url ? 'External application link' : 'Apply through ConnectGrad'}
                   </div>
                 </div>
-                <p style={{ fontSize: 13, color: '#cbd5e1', lineHeight: 1.8 }}>{form.description ? form.description.slice(0, 140) + (form.description.length > 140 ? '…' : '') : 'Add a short summary of what the role includes and what kind of graduate you are looking for.'}</p>
+                <p style={{ fontSize: 13, color: '#cbd5e1', lineHeight: 1.8 }}>{form.description ? form.description.slice(0, 140) + (form.description.length > 140 ? '...' : '') : 'Add a short summary of what the role includes and what kind of graduate you are looking for.'}</p>
               </div>
             </div>
           </aside>

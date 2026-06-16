@@ -51,8 +51,8 @@ async function genAnswers(job, profile) {
 function StatusPill({ status }) {
   const map = {
     pending:     { label: 'Pending',     color: '#475569', bg: 'rgba(71,85,105,0.15)'  },
-    generating:  { label: 'Generating…', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-    done:        { label: 'Ready',       color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+    generating:  { label: 'Generating...', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+    done:        { label: 'Ready',       color: '#6366f1', bg: 'rgba(99,102,241,0.12)' },
     error:       { label: 'Error',       color: '#f87171', bg: 'rgba(239,68,68,0.12)'  },
   }
   const { label, color, bg } = map[status] || map.pending
@@ -86,7 +86,7 @@ function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
           <AlertCircle size={16} color="#f87171" style={{ flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <span style={{ fontSize: 14, fontWeight: 600, color: '#f87171' }}>
-              {item.job.company} — {item.job.title}
+              {item.job.company} - {item.job.title}
             </span>
             <span style={{ display: 'block', fontSize: 12, color: '#64748b', marginTop: 2 }}>{item.error}</span>
           </div>
@@ -109,7 +109,7 @@ function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
   return (
     <div style={{
       borderRadius: 16, overflow: 'hidden',
-      border: `1px solid ${item.status === 'done' ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.07)'}`,
+      border: `1px solid ${item.status === 'done' ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.07)'}`,
       background: 'rgba(255,255,255,0.02)', marginBottom: 16,
     }}>
       {/* Card header */}
@@ -171,7 +171,7 @@ function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
             <div style={{ display: 'grid', gap: 10 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 14px', borderRadius: 9, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, overflow: 'hidden' }}>
-                  <FileText size={14} color={item.cvUrl ? '#10b981' : '#f59e0b'} />
+                  <FileText size={14} color={item.cvUrl ? '#6366f1' : '#f59e0b'} />
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 13, color: item.cvUrl ? '#f1f5f9' : '#fcd34d', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {item.cvFileName || (item.cvUrl ? 'Profile resume' : 'No resume attached')}
@@ -179,7 +179,7 @@ function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
                     <div style={{ fontSize: 11, color: '#94a3b8' }}>{item.cvUrl ? 'Attached' : 'Upload a resume to include with this application.'}</div>
                   </div>
                 </div>
-                <button type="button" onClick={() => document.getElementById(`cv-upload-${item.job.id}`)?.click()} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: 'rgba(16,185,129,0.14)', color: '#10b981', fontSize: 12, cursor: 'pointer' }}>
+                <button type="button" onClick={() => document.getElementById(`cv-upload-${item.job.id}`)?.click()} style={{ padding: '8px 14px', borderRadius: 10, border: 'none', background: 'rgba(99,102,241,0.14)', color: '#6366f1', fontSize: 12, cursor: 'pointer' }}>
                   {item.cvUrl ? 'Replace' : 'Upload'}
                 </button>
               </div>
@@ -220,8 +220,8 @@ function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
                   onClick={() => setTab(t)}
                   style={{
                     padding: '7px 16px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                    background: tab === t ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.04)',
-                    color: tab === t ? '#10b981' : '#64748b',
+                    background: tab === t ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.04)',
+                    color: tab === t ? '#6366f1' : '#64748b',
                     fontSize: 13, fontWeight: tab === t ? 600 : 400,
                   }}
                 >
@@ -261,9 +261,9 @@ function JobReviewCard({ item, index, onUpdate, onRetry, onUpload }) {
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
                     <div style={{
                       width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 1,
-                      background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)',
+                      background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 10, fontWeight: 700, color: '#10b981',
+                      fontSize: 10, fontWeight: 700, color: '#6366f1',
                     }}>
                       {i + 1}
                     </div>
@@ -293,9 +293,9 @@ function ReqChip({ icon: Icon, label, done, note }) {
     <div style={{
       display: 'flex', alignItems: 'center', gap: 6,
       padding: '5px 11px', borderRadius: 7,
-      background: done ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.08)',
-      border: `1px solid ${done ? 'rgba(16,185,129,0.2)' : 'rgba(245,158,11,0.2)'}`,
-      fontSize: 12, color: done ? '#34d399' : '#fcd34d',
+      background: done ? 'rgba(99,102,241,0.08)' : 'rgba(245,158,11,0.08)',
+      border: `1px solid ${done ? 'rgba(99,102,241,0.2)' : 'rgba(245,158,11,0.2)'}`,
+      fontSize: 12, color: done ? '#6366f1' : '#fcd34d',
     }} title={note}>
       {done ? <CheckCircle size={12} /> : <Icon size={12} />}
       {label}
@@ -447,7 +447,7 @@ export default function MassApplyPage() {
 
   if (authLoading || !profile) return (
     <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Loader size={24} color="#10b981" style={{ animation: 'spin 0.8s linear infinite' }} />
+      <Loader size={24} color="#6366f1" style={{ animation: 'spin 0.8s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   )
@@ -474,7 +474,7 @@ export default function MassApplyPage() {
             </span>
             <span style={{ fontSize: 13, color: '#64748b', marginLeft: 10 }}>
               {phase === 'generating'
-                ? `Generating… ${doneCount}/${totalCount}`
+                ? `Generating... ${doneCount}/${totalCount}`
                 : `${doneCount} of ${totalCount} ready`}
             </span>
           </div>
@@ -483,8 +483,8 @@ export default function MassApplyPage() {
           <div style={{
             display: 'flex', alignItems: 'center', gap: 7,
             padding: '5px 12px', borderRadius: 8,
-            background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)',
-            fontSize: 12, color: '#34d399',
+            background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)',
+            fontSize: 12, color: '#6366f1',
           }}>
             <User size={12} />
             {profile.first_name} {profile.last_name} · {profile.university}
@@ -496,9 +496,9 @@ export default function MassApplyPage() {
               style={{
                 display: 'flex', alignItems: 'center', gap: 7,
                 padding: '10px 20px', borderRadius: 10, border: 'none', cursor: 'pointer',
-                background: 'linear-gradient(135deg, #059669, #10b981)',
+                background: 'linear-gradient(135deg, #6366f1, #6366f1)',
                 color: 'white', fontSize: 14, fontWeight: 700,
-                boxShadow: '0 0 20px rgba(16,185,129,0.3)',
+                boxShadow: '0 0 20px rgba(99,102,241,0.3)',
               }}
             >
               <Send size={14} /> Submit {doneCount} Application{doneCount !== 1 ? 's' : ''}
@@ -506,8 +506,8 @@ export default function MassApplyPage() {
           )}
 
           {phase === 'submitting' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 14, color: '#10b981', fontWeight: 600 }}>
-              <Loader size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> Submitting…
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 14, color: '#6366f1', fontWeight: 600 }}>
+              <Loader size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> Submitting...
             </div>
           )}
         </div>
@@ -518,18 +518,18 @@ export default function MassApplyPage() {
         {phase === 'generating' && (
           <div style={{
             padding: '16px 20px', borderRadius: 14, marginBottom: 28,
-            background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)',
+            background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)',
             display: 'flex', alignItems: 'center', gap: 12,
           }}>
-            <Sparkles size={18} color="#10b981" style={{ flexShrink: 0 }} />
+            <Sparkles size={18} color="#6366f1" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
               <p style={{ fontSize: 14, fontWeight: 600, color: '#f1f5f9', marginBottom: 6 }}>
-                Generating tailored applications…
+                Generating tailored applications...
               </p>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {items.map(it => (
                   <div key={it.job.id} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: '#64748b' }}>
-                    {it.status === 'done'    && <CheckCircle size={12} color="#10b981" />}
+                    {it.status === 'done'    && <CheckCircle size={12} color="#6366f1" />}
                     {it.status === 'generating' && <Loader size={12} color="#f59e0b" style={{ animation: 'spin 0.8s linear infinite' }} />}
                     {it.status === 'pending' && <div style={{ width: 12, height: 12, borderRadius: '50%', border: '1.5px solid #475569' }} />}
                     {it.status === 'error'   && <AlertCircle size={12} color="#f87171" />}
@@ -544,7 +544,7 @@ export default function MassApplyPage() {
         {/* Instructions (review phase) */}
         {phase === 'review' && (
           <div style={{ marginBottom: 24 }}>
-            <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 }}>
+            <p style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 6 }}>
               Review & edit before submitting
             </p>
             <p style={{ fontSize: 14, color: '#64748b' }}>

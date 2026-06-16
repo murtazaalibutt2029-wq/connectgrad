@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
-import { GraduationCap, Eye, EyeOff, CheckCircle, ArrowRight, Briefcase, Loader, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, CheckCircle, ArrowRight, Briefcase, Loader, AlertCircle } from 'lucide-react'
+import Logo from '../components/Logo'
 import SkillPicker from '../components/SkillPicker'
 import { supabase } from '../lib/supabase'
 
@@ -21,11 +22,11 @@ const studyFields = [
 
 const benefits = [
   'Access 12,000+ verified student opportunities',
-  'Personalized job recommendations',
-  'CV & cover letter templates',
-  'Salary benchmarks by role & region',
-  'Alumni network & mentorship',
-  'Application deadline reminders',
+  'Build applications that stand out to employers',
+  'Save resume and cover letter drafts in one place',
+  'Explore salary benchmarks by role and region',
+  'Connect with alumni and early-career mentors',
+  'Keep deadlines and interviews organized',
 ]
 
 function friendlyError(msg) {
@@ -124,12 +125,12 @@ export default function SignupPage() {
         <div style={{ textAlign: 'center', maxWidth: 480 }}>
           <div style={{
             width: 80, height: 80, borderRadius: '50%',
-            background: 'rgba(16,185,129,0.15)',
-            border: '2px solid rgba(16,185,129,0.3)',
+            background: 'rgba(99,102,241,0.15)',
+            border: '2px solid rgba(99,102,241,0.3)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             margin: '0 auto 24px',
           }}>
-            <CheckCircle size={38} color="#10b981" />
+            <CheckCircle size={38} color="#6366f1" />
           </div>
           <h2 style={{ fontSize: 28, fontWeight: 700, color: '#f1f5f9', marginBottom: 12 }}>
             Welcome to ConnectGrad!
@@ -150,7 +151,7 @@ export default function SignupPage() {
             <Link to="/jobs" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '13px 28px', borderRadius: 10,
-              background: 'linear-gradient(135deg, #059669, #10b981)',
+              background: 'linear-gradient(135deg, #6366f1, #1e40af)',
               color: 'white', fontSize: 15, fontWeight: 600, textDecoration: 'none',
             }}>
               Browse Jobs <ArrowRight size={16} />
@@ -169,21 +170,12 @@ export default function SignupPage() {
       <div style={{
         flex: '0 0 420px',
         background: 'linear-gradient(180deg, #071230 0%, #0d1f4f 100%)',
-        borderRight: '1px solid rgba(16,185,129,0.1)',
+        borderRight: '1px solid rgba(99,102,241,0.1)',
         padding: '60px 40px',
         display: 'flex', flexDirection: 'column',
       }} className="signup-left">
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginBottom: 48 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 10,
-            background: 'linear-gradient(135deg, #059669, #10b981)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <GraduationCap size={20} color="white" />
-          </div>
-          <span style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9' }}>
-            Connect<span style={{ color: '#10b981' }}>Grad</span>
-          </span>
+          <Logo mini={true} size={36} />
         </Link>
 
         <div style={{ flex: 1 }}>
@@ -199,7 +191,7 @@ export default function SignupPage() {
                 display: 'flex', alignItems: 'flex-start', gap: 10,
                 fontSize: 13, color: '#94a3b8', marginBottom: 14, lineHeight: 1.5,
               }}>
-                <CheckCircle size={15} color="#10b981" style={{ flexShrink: 0, marginTop: 1 }} />
+                <CheckCircle size={15} color="#6366f1" style={{ flexShrink: 0, marginTop: 1 }} />
                 {b}
               </li>
             ))}
@@ -208,13 +200,13 @@ export default function SignupPage() {
 
         <div style={{
           marginTop: 40, padding: 20, borderRadius: 12,
-          background: 'rgba(16,185,129,0.07)',
-          border: '1px solid rgba(16,185,129,0.15)',
+          background: 'rgba(99,102,241,0.07)',
+          border: '1px solid rgba(99,102,241,0.15)',
         }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
             <div style={{
               width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
-              background: 'linear-gradient(135deg, #059669, #10b981)',
+              background: 'linear-gradient(135deg, #6366f1, #6366f1)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 14, fontWeight: 700, color: 'white',
             }}>Z</div>
@@ -241,8 +233,8 @@ export default function SignupPage() {
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: '50%',
-                  background: step >= s ? 'linear-gradient(135deg, #059669, #10b981)' : 'rgba(255,255,255,0.06)',
-                  border: step === s ? '2px solid #10b981' : '2px solid transparent',
+                  background: step >= s ? 'linear-gradient(135deg, #6366f1, #6366f1)' : 'rgba(255,255,255,0.06)',
+                  border: step === s ? '2px solid #6366f1' : '2px solid transparent',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 12, fontWeight: 700, color: step >= s ? 'white' : '#475569',
                 }}>
@@ -252,7 +244,7 @@ export default function SignupPage() {
                   {s === 1 ? 'Account' : 'Your Profile'}
                 </span>
                 {s < 2 && (
-                  <div style={{ width: 40, height: 1, background: step > s ? '#10b981' : 'rgba(255,255,255,0.1)', marginLeft: 4 }} />
+                  <div style={{ width: 40, height: 1, background: step > s ? '#6366f1' : 'rgba(255,255,255,0.1)', marginLeft: 4 }} />
                 )}
               </div>
             ))}
@@ -277,7 +269,7 @@ export default function SignupPage() {
               <h2 style={{ fontSize: 26, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Create your account</h2>
               <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32 }}>
                 Already have an account?{' '}
-                <Link to="/login" style={{ color: '#10b981', textDecoration: 'none' }}>Log in</Link>
+                <Link to="/login" style={{ color: '#6366f1', textDecoration: 'none' }}>Log in</Link>
               </p>
 
               <div style={{ display: 'flex', gap: 10, marginBottom: 24 }}>
@@ -427,11 +419,11 @@ export default function SignupPage() {
 
                 <div style={{
                   padding: 16, borderRadius: 10, marginBottom: 24,
-                  background: 'rgba(16,185,129,0.07)',
-                  border: '1px solid rgba(16,185,129,0.15)',
+                  background: 'rgba(99,102,241,0.07)',
+                  border: '1px solid rgba(99,102,241,0.15)',
                 }}>
                   <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                    <Briefcase size={16} color="#10b981" style={{ marginTop: 1, flexShrink: 0 }} />
+                    <Briefcase size={16} color="#6366f1" style={{ marginTop: 1, flexShrink: 0 }} />
                     <p style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6 }}>
                       Your profile is saved to your account. You can update preferences anytime.
                     </p>
@@ -459,7 +451,7 @@ export default function SignupPage() {
                     style={submitBtnStyle(!loading)}
                   >
                     {loading
-                      ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Creating account…</>
+                      ? <><Loader size={15} style={{ animation: 'spin 0.8s linear infinite' }} /> Creating account...</>
                       : 'Create my account'
                     }
                   </button>
@@ -494,12 +486,12 @@ const inputStyle = {
 
 const submitBtnStyle = (active) => ({
   flex: 1, width: '100%', padding: '13px 0', borderRadius: 10, border: 'none',
-  background: active ? 'linear-gradient(135deg, #059669, #10b981)' : 'rgba(255,255,255,0.06)',
+  background: active ? 'linear-gradient(135deg, #6366f1, #6366f1)' : 'rgba(255,255,255,0.06)',
   color: active ? 'white' : '#475569',
   fontSize: 15, fontWeight: 700,
   cursor: active ? 'pointer' : 'not-allowed',
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-  boxShadow: active ? '0 0 24px rgba(16,185,129,0.3)' : 'none',
+  boxShadow: active ? '0 0 24px rgba(99,102,241,0.3)' : 'none',
   transition: 'all 0.2s',
 })
 

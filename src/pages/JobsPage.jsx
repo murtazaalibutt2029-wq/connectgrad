@@ -67,9 +67,9 @@ export default function JobsPage() {
         <div style={{
           position: 'fixed', top: 20, right: 20, zIndex: 200,
           padding: '12px 20px', borderRadius: 10,
-          background: toast.type === 'success' ? 'rgba(16,185,129,0.15)' : 'rgba(99,102,241,0.15)',
-          border: `1px solid ${toast.type === 'success' ? 'rgba(16,185,129,0.4)' : 'rgba(99,102,241,0.4)'}`,
-          color: toast.type === 'success' ? '#34d399' : '#a5b4fc',
+          background: toast.type === 'success' ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.15)',
+          border: `1px solid ${toast.type === 'success' ? 'rgba(99,102,241,0.4)' : 'rgba(99,102,241,0.4)'}`,
+          color: toast.type === 'success' ? '#6366f1' : '#a5b4fc',
           fontSize: 14, fontWeight: 500,
           display: 'flex', alignItems: 'center', gap: 10,
           boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
@@ -90,7 +90,7 @@ export default function JobsPage() {
       }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-            <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase' }}>
+            <p style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', letterSpacing: 1.5, textTransform: 'uppercase' }}>
               {filtered.length} opportunities available
             </p>
             <Link to="/tracker" style={{
@@ -162,13 +162,13 @@ export default function JobsPage() {
                 <div key={f} style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '4px 12px', borderRadius: 6,
-                  background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)',
-                  fontSize: 12, color: '#34d399',
+                  background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
+                  fontSize: 12, color: '#6366f1',
                 }}>
                   {f}
                   <button
                     onClick={() => regions.includes(f) ? setRegion('All Regions') : setType('All Types')}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#34d399', display: 'flex', padding: 0 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6366f1', display: 'flex', padding: 0 }}
                   >
                     <X size={12} />
                   </button>
@@ -209,7 +209,7 @@ export default function JobsPage() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     background: 'none', border: 'none', cursor: 'pointer',
-                    fontSize: 13, color: allVisibleSelected ? '#10b981' : '#64748b',
+                    fontSize: 13, color: allVisibleSelected ? '#6366f1' : '#64748b',
                     padding: 0,
                   }}
                 >
@@ -259,17 +259,17 @@ export default function JobsPage() {
         <div style={{
           position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
           background: '#0d1f4f',
-          border: '1px solid rgba(16,185,129,0.35)',
+          border: '1px solid rgba(99,102,241,0.35)',
           borderRadius: 16,
           padding: '14px 20px',
           display: 'flex', alignItems: 'center', gap: 16,
-          boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(16,185,129,0.1)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.1)',
           zIndex: 100,
           backdropFilter: 'blur(16px)',
           whiteSpace: 'nowrap',
         }}>
           <div style={{ fontSize: 14, color: '#94a3b8' }}>
-            <span style={{ color: '#10b981', fontWeight: 700 }}>{selectedIds.size}</span>
+            <span style={{ color: '#6366f1', fontWeight: 700 }}>{selectedIds.size}</span>
             {' '}job{selectedIds.size > 1 ? 's' : ''} selected
           </div>
           <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.1)' }} />
@@ -288,10 +288,10 @@ export default function JobsPage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 8,
               padding: '10px 22px', borderRadius: 10,
-              background: 'linear-gradient(135deg, #059669, #10b981)',
+              background: 'linear-gradient(135deg, #6366f1, #6366f1)',
               border: 'none', cursor: 'pointer',
               color: 'white', fontSize: 14, fontWeight: 700,
-              boxShadow: '0 0 20px rgba(16,185,129,0.4)',
+              boxShadow: '0 0 20px rgba(99,102,241,0.4)',
             }}
           >
             <Send size={14} />
