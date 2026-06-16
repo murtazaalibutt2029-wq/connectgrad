@@ -36,7 +36,11 @@ export default function LoginPage() {
       return
     }
 
-    navigate('/jobs')
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: empData } = await supabase.from('employer_profiles').select('id').eq('user_id', user.id).single()
+      if (empData) { navigate('/employer/dashboard') } else { navigate('/jobs') }
+    } else { navigate('/jobs') }
   }
 
   return (
