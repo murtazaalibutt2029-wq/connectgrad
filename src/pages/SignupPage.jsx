@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import PhoneInput from 'react-phone-number-input'
 import 'react-phone-number-input/style.css'
 import { Eye, EyeOff, CheckCircle, ArrowRight, Briefcase, Loader, AlertCircle } from 'lucide-react'
@@ -43,6 +43,8 @@ function friendlyError(msg) {
 }
 
 export default function SignupPage() {
+  const navigate = useNavigate()
+  const [role, setRole] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep]         = useState(1)
   const [loading, setLoading]   = useState(false)
@@ -163,6 +165,35 @@ export default function SignupPage() {
   }
 
   // ── Form ─────────────────────────────────────────────────────────────────
+  if (!role) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#030a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px' }}>
+        <div style={{ width: '100%', maxWidth: 560 }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <Link to="/" style={{ textDecoration: 'none' }}><Logo /></Link>
+            <h1 style={{ fontSize: 32, fontWeight: 800, color: '#f1f5f9', marginTop: 24, marginBottom: 10 }}>Join ConnectGrad</h1>
+            <p style={{ fontSize: 15, color: '#94a3b8' }}>Are you looking for a job, or looking to hire?</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <button onClick={() => setRole('student')} style={{ padding: '32px 20px', borderRadius: 16, background: 'rgba(99,102,241,0.08)', border: '2px solid rgba(99,102,241,0.3)', cursor: 'pointer', textAlign: 'center' }}>
+              <div style={{ fontSize: 36, marginBottom: 12 }}>&#127891;</div>
+              <p style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Student / Graduate</p>
+              <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.5 }}>Looking for jobs, internships, or career opportunities</p>
+            </button>
+            <button onClick={() => navigate('/employer/signup')} style={{ padding: '32px 20px', borderRadius: 16, background: 'rgba(245,158,11,0.08)', border: '2px solid rgba(245,158,11,0.3)', cursor: 'pointer', textAlign: 'center' }}>
+              <div style={{ fontSize: 36, marginBottom: 12 }}>&#127970;</div>
+              <p style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Employer</p>
+              <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.5 }}>Hiring students and graduates for roles at your company</p>
+            </button>
+          </div>
+          <p style={{ textAlign: 'center', marginTop: 24, fontSize: 14, color: '#64748b' }}>
+            Already have an account? <Link to="/login" style={{ color: '#6366f1', textDecoration: 'none' }}>Log in</Link>
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#030a1a', display: 'flex' }}>
 

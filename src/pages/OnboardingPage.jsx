@@ -15,6 +15,7 @@ export default function OnboardingPage() {
   const [resumeStatus, setResumeStatus] = useState(null)
   const [resumeError, setResumeError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [message, setMessage] = useState('')
   const [form, setForm] = useState({ phone: '', bio: '', skills: '' })
   const fileRef = useRef()
@@ -73,6 +74,7 @@ export default function OnboardingPage() {
   const handleSaveProfile = async () => {
     setSaving(true)
     setResumeError('')
+    setSaveError('')
     try {
       const { error } = await supabase.from('profiles').upsert({
         id: session.user.id,
@@ -85,7 +87,7 @@ export default function OnboardingPage() {
       setMessage('Profile details saved.')
       setStep(3)
     } catch (err) {
-      setResumeError(err.message || 'Unable to save profile details.')
+      setSaveError(err.message || 'Unable to save profile details.')
     } finally {
       setSaving(false)
     }
@@ -165,6 +167,7 @@ export default function OnboardingPage() {
                     <textarea value={form.bio} onChange={e => update('bio', e.target.value)} rows={4} placeholder="A brief professional summary" style={{ width: '100%', padding: '14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#f1f5f9', resize: 'vertical' }} />
                   </div>
                   <SkillPicker label="Skills" value={form.skills} onChange={value => update('skills', value)} placeholder="Search and add skills" />
+                  {saveError && <p style={{ marginTop: 8, fontSize: 13, color: '#f87171' }}>{saveError}</p>}
                 </div>
               </div>
             )}
