@@ -25,8 +25,10 @@ async function genLetter(job, profile) {
       profile,
     }),
   })
-  const data = await res.json()
-  if (!res.ok) throw new Error(data.error)
+  const text = await res.text()
+  let data
+  try { data = JSON.parse(text) } catch { data = { error: text } }
+  if (!res.ok) throw new Error(data.error || 'Failed to generate cover letter.')
   return data.letter
 }
 
@@ -37,8 +39,10 @@ async function genAnswers(job, profile) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ job, questions: job.requirements.customQuestions, profile }),
   })
-  const data = await res.json()
-  if (!res.ok) throw new Error(data.error)
+  const text = await res.text()
+  let data
+  try { data = JSON.parse(text) } catch { data = { error: text } }
+  if (!res.ok) throw new Error(data.error || 'Failed to generate application answers.')
   return data.answers
 }
 

@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 import {
   User, GraduationCap, Briefcase, Save, CheckCircle, AlertCircle,
   Loader, X, Plus, LogOut, Globe, Heart, BookOpen, Target, Phone,
   FileText, Upload, ExternalLink, Sparkles,
 } from 'lucide-react'
+import SkillPicker from '../components/SkillPicker'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 
@@ -27,6 +30,9 @@ export default function ProfilePage() {
   const [resumeUrl,     setResumeUrl]    = useState('')
   const [resumeStatus,  setResumeStatus] = useState(null) // null|'reading'|'uploading'|'parsing'|'done'|'error'
   const [resumeError,   setResumeError]  = useState('')
+  const [reviewStatus,  setReviewStatus]  = useState(null) // null|'reviewing'|'done'|'error'
+  const [reviewError,   setReviewError]   = useState('')
+  const [reviewFeedback, setReviewFeedback] = useState(null)
   const resumeInputRef = useRef()
 
   useEffect(() => { if (!loading && !session) navigate('/login') }, [session, loading])
@@ -151,6 +157,48 @@ export default function ProfilePage() {
     }
   }
 
+  const handleReviewResume = async () => {
+    setReviewStatus('reviewing')
+    setReviewError('')
+    setReviewFeedback(null)
+
+    if (!resumeUrl) {
+      setReviewError('Upload your resume first to receive AI feedback.')
+      setReviewStatus('error')
+      return
+    }
+
+    try {
+      const response = await fetch(resumeUrl)
+      if (!response.ok) throw new Error('Unable to download your saved resume.')
+      const arrayBuffer = await response.arrayBuffer()
+      const { getDocument, GlobalWorkerOptions } = await import('pdfjs-dist')
+      GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+      const pdf = await getDocument({ data: arrayBuffer }).promise
+      let resumeText = ''
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i)
+        const content = await page.getTextContent()
+        resumeText += content.items.map(item => item.str).join(' ') + '\n'
+      }
+      if (!resumeText.trim()) throw new Error('No readable text found in the uploaded resume.')
+
+      const reviewRes = await fetch('/api/review-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resumeText: resumeText.trim() }),
+      })
+
+      const reviewData = await reviewRes.json()
+      if (!reviewRes.ok) throw new Error(reviewData.error || 'Resume review failed.')
+      setReviewFeedback(reviewData.review)
+      setReviewStatus('done')
+    } catch (err) {
+      setReviewError(err.message || 'Resume review failed. Please try again.')
+      setReviewStatus('error')
+    }
+  }
+
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type })
     setTimeout(() => setToast(null), 3000)
@@ -175,6 +223,13 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => { await supabase.auth.signOut(); navigate('/') }
 
+  const completionCount = [
+    form.first_name, form.last_name, form.phone, form.university,
+    form.field_of_study, form.graduation_year, form.preferred_region,
+    form.bio, skills.length > 0,
+  ].filter(Boolean).length
+  const completionPercent = Math.round((completionCount / 9) * 100)
+
   if (loading) return <Spinner />
 
   return (
@@ -183,17 +238,34 @@ export default function ProfilePage() {
 
       <div style={{ maxWidth: 720, margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 36 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
           <div>
             <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 8 }}>My Account</p>
             <h1 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.5px' }}>Profile</h1>
-            <p style={{ fontSize: 13, color: '#64748b', marginTop: 6 }}>
-              The more you fill in, the better your AI cover letters will be.
+            <p style={{ fontSize: 13, color: '#64748b', marginTop: 6, maxWidth: 560 }}>
+              Complete your profile to maximise match quality, improve cover letters, and make every application feel polished.
             </p>
           </div>
           <button onClick={handleSignOut} style={ghostBtn}>
             <LogOut size={14} /> Sign out
           </button>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16, marginBottom: 24 }}>
+          <div style={{ padding: 20, borderRadius: 18, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 14, flexWrap: 'wrap' }}>
+              <div>
+                <p style={{ fontSize: 12, fontWeight: 600, color: '#10b981', textTransform: 'uppercase', letterSpacing: 1.2, marginBottom: 6 }}>Profile completeness</p>
+                <h2 style={{ fontSize: 20, fontWeight: 700, color: '#f1f5f9' }}>{completionPercent}% ready to apply</h2>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: 13, color: '#64748b' }}>Complete these items to boost your application quality.</p>
+              </div>
+            </div>
+            <div style={{ width: '100%', height: 10, borderRadius: 999, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+              <div style={{ width: `${completionPercent}%`, height: '100%', background: 'linear-gradient(135deg, #059669, #10b981)' }} />
+            </div>
+          </div>
         </div>
 
         {/* ── Resume Upload ── */}
@@ -250,24 +322,83 @@ export default function ProfilePage() {
           )}
 
           <input ref={resumeInputRef} type="file" accept=".pdf" onChange={handleResumeUpload} style={{ display: 'none' }} />
-          <button
-            type="button"
-            onClick={() => { setResumeStatus(null); setResumeError(''); resumeInputRef.current.click() }}
-            disabled={!!resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error'}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              padding: '10px 18px', borderRadius: 9, border: 'none',
-              cursor: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'not-allowed' : 'pointer',
-              background: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'rgba(255,255,255,0.04)' : 'linear-gradient(135deg, #059669, #10b981)',
-              color: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? '#475569' : 'white',
-              fontSize: 13, fontWeight: 700,
-              boxShadow: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'none' : '0 0 16px rgba(16,185,129,0.25)',
-            }}
-          >
-            <Upload size={14} />
-            {resumeUrl && resumeStatus !== 'error' ? 'Replace Resume (PDF)' : 'Upload Resume (PDF)'}
-          </button>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 10 }}>
+            <button
+              type="button"
+              onClick={() => { setResumeStatus(null); setResumeError(''); resumeInputRef.current.click() }}
+              disabled={!!resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error'}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '10px 18px', borderRadius: 9, border: 'none',
+                cursor: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'not-allowed' : 'pointer',
+                background: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'rgba(255,255,255,0.04)' : 'linear-gradient(135deg, #059669, #10b981)',
+                color: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? '#475569' : 'white',
+                fontSize: 13, fontWeight: 700,
+                boxShadow: (resumeStatus && resumeStatus !== 'done' && resumeStatus !== 'error') ? 'none' : '0 0 16px rgba(16,185,129,0.25)',
+              }}
+            >
+              <Upload size={14} />
+              {resumeUrl && resumeStatus !== 'error' ? 'Replace Resume (PDF)' : 'Upload Resume (PDF)'}
+            </button>
+            <button
+              type="button"
+              onClick={handleReviewResume}
+              disabled={!resumeUrl || reviewStatus === 'reviewing'}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '10px 18px', borderRadius: 9, border: '1px solid rgba(255,255,255,0.12)',
+                background: 'rgba(255,255,255,0.04)', color: '#f1f5f9', fontSize: 13,
+                cursor: (!resumeUrl || reviewStatus === 'reviewing') ? 'not-allowed' : 'pointer',
+              }}
+            >
+              <Sparkles size={14} /> Review My Resume
+            </button>
+          </div>
+          {reviewStatus === 'reviewing' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, padding: '10px 14px', borderRadius: 9, background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
+              <Loader size={13} color="#f59e0b" style={{ animation: 'spin 0.8s linear infinite', flexShrink: 0 }} />
+              <span style={{ fontSize: 13, color: '#fcd34d' }}>Reviewing your resume with AI…</span>
+            </div>
+          )}
+          {reviewStatus === 'error' && reviewError && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, padding: '10px 14px', borderRadius: 9, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+              <AlertCircle size={13} color="#f87171" style={{ flexShrink: 0 }} />
+              <span style={{ fontSize: 13, color: '#f87171' }}>{reviewError}</span>
+            </div>
+          )}
         </div>
+
+        {reviewFeedback && (
+          <div style={{ position: 'fixed', inset: 0, zIndex: 210, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+            <div style={{ width: '100%', maxWidth: 760, maxHeight: '90vh', overflowY: 'auto', background: '#071620', borderRadius: 24, border: '1px solid rgba(16,185,129,0.2)', padding: 28, position: 'relative' }}>
+              <button onClick={() => { setReviewFeedback(null); setReviewStatus(null); setReviewError('') }} style={{ position: 'absolute', top: 18, right: 18, border: 'none', background: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+                <X size={18} />
+              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+                <div style={{ width: 42, height: 42, borderRadius: 12, background: 'rgba(16,185,129,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Sparkles size={22} color="#10b981" />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9', marginBottom: 4 }}>AI Resume Review</h2>
+                  <p style={{ fontSize: 13, color: '#94a3b8' }}>Clear feedback on what is working and what to improve.</p>
+                </div>
+              </div>
+              {['overallImpression', 'strengths', 'areasForImprovement', 'suggestions'].map(key => (
+                reviewFeedback[key] && (
+                  <div key={key} style={{ marginBottom: 18 }}>
+                    <h3 style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>{
+                      key === 'overallImpression' ? 'Overall impression' : key === 'areasForImprovement' ? 'Areas to improve' : key === 'suggestions' ? 'Specific suggestions' : 'Strengths'
+                    }</h3>
+                    <p style={{ fontSize: 14, color: '#cbd5e1', lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{reviewFeedback[key]}</p>
+                  </div>
+                )
+              ))}
+              <button type="button" onClick={() => { setReviewFeedback(null); setReviewStatus(null); setReviewError('') }} style={{ padding: '12px 22px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #059669, #10b981)', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+                Close review
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSave}>
 
@@ -282,7 +413,17 @@ export default function ProfilePage() {
                 <label style={labelStyle}>Email address</label>
                 <input value={session?.user?.email || ''} disabled style={{ ...inputStyle, color: '#475569', cursor: 'not-allowed' }} />
               </div>
-              <Field label="Phone number" value={form.phone} onChange={v => update('phone', v)} placeholder="+44 7700 900000" />
+              <div>
+                <label style={labelStyle}>Phone number</label>
+                <PhoneInput
+                  international
+                  defaultCountry="PK"
+                  value={form.phone}
+                  onChange={value => update('phone', value)}
+                  placeholder="Enter phone number"
+                  style={{ ...inputStyle, width: '100%' }}
+                />
+              </div>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 14 }}>
               <Field label="LinkedIn URL" value={form.linkedin_url} onChange={v => update('linkedin_url', v)} placeholder="linkedin.com/in/yourname" />
@@ -301,7 +442,7 @@ export default function ProfilePage() {
                 <label style={labelStyle}>Graduation year</label>
                 <select value={form.graduation_year} onChange={e => update('graduation_year', e.target.value)} style={{ ...inputStyle, color: form.graduation_year ? '#f1f5f9' : '#475569' }}>
                   <option value="">Select year</option>
-                  {[2025, 2026, 2027, 2028, 2029].map(y => <option key={y} value={y}>{y}</option>)}
+                  {[2025, 2026, 2027, 2028, 2029, 2030, 2031].map(y => <option key={y} value={y}>{y}</option>)}
                 </select>
               </div>
               <div>
@@ -339,25 +480,12 @@ export default function ProfilePage() {
 
           {/* ── Skills ── */}
           <Section icon={Briefcase} title="Skills">
-            {skills.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
-                {skills.map(s => (
-                  <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8, background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontSize: 13, color: '#34d399' }}>
-                    {s}
-                    <button type="button" onClick={() => setSkills(p => p.filter(x => x !== s))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#34d399', display: 'flex', padding: 0 }}><X size={12} /></button>
-                  </div>
-                ))}
-              </div>
-            )}
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input value={skillInput} onChange={e => setSkillInput(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSkill() } }}
-                placeholder="Type a skill and press Enter (e.g. Python, React, Figma)"
-                style={{ ...inputStyle, flex: 1 }} />
-              <button type="button" onClick={addSkill} disabled={!skillInput.trim()} style={{ ...addBtn(!!skillInput.trim()), flexShrink: 0 }}>
-                <Plus size={14} /> Add
-              </button>
-            </div>
+            <SkillPicker
+              label="Your top professional skills"
+              value={skills.join(', ')}
+              onChange={value => setSkills(value.split(',').map(s => s.trim()).filter(Boolean))}
+              placeholder="Search and add skills"
+            />
           </Section>
 
           {/* ── Work Experience ── */}

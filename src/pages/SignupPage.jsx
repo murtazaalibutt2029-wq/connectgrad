@@ -1,14 +1,10 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import PhoneInput from 'react-phone-number-input'
+import 'react-phone-number-input/style.css'
 import { GraduationCap, Eye, EyeOff, CheckCircle, ArrowRight, Briefcase, Loader, AlertCircle } from 'lucide-react'
+import SkillPicker from '../components/SkillPicker'
 import { supabase } from '../lib/supabase'
-
-const universities = [
-  'LUMS', 'NUST', 'IBA Karachi', 'Aga Khan University',
-  'University of Oxford', 'University of Cambridge', 'Imperial College London', 'UCL',
-  'MIT', 'Stanford University', 'Harvard University', 'Columbia University',
-  'TU Berlin', 'University of Amsterdam', 'ETH Zurich', 'Other',
-]
 
 const studyFields = [
   'Computer Science / Software Engineering',
@@ -46,7 +42,6 @@ function friendlyError(msg) {
 }
 
 export default function SignupPage() {
-  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [step, setStep]         = useState(1)
   const [loading, setLoading]   = useState(false)
@@ -56,6 +51,7 @@ export default function SignupPage() {
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', password: '',
     university: '', field: '', graduationYear: '', region: '',
+    phone: '', bio: '', skills: '',
   })
 
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }))
@@ -85,6 +81,7 @@ export default function SignupPage() {
       })
 
       if (authError) throw authError
+      if (!data?.user?.id) throw new Error('Failed to create account. No user ID was returned.')
 
       // 2. Insert the student profile
       const { error: profileError } = await supabase
@@ -98,13 +95,23 @@ export default function SignupPage() {
           field_of_study: form.field,
           graduation_year: parseInt(form.graduationYear),
           preferred_region: form.region,
+          phone: form.phone,
+          bio: form.bio,
+          skills: form.skills,
         })
 
       if (profileError) throw profileError
-
       setSubmitted(true)
     } catch (err) {
-      setError(friendlyError(err.message))
+      console.error('Signup failed', {
+        email: form.email,
+        university: form.university,
+        field: form.field,
+        graduationYear: form.graduationYear,
+        region: form.region,
+        error: err,
+      })
+      setError(friendlyError(err.message || err?.toString()))
     } finally {
       setLoading(false)
     }
@@ -130,14 +137,25 @@ export default function SignupPage() {
           <p style={{ fontSize: 15, color: '#64748b', marginBottom: 32 }}>
             Your account has been created. You're all set.
           </p>
-          <Link to="/jobs" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            padding: '13px 28px', borderRadius: 10,
-            background: 'linear-gradient(135deg, #059669, #10b981)',
-            color: 'white', fontSize: 15, fontWeight: 600, textDecoration: 'none',
-          }}>
-            Browse Jobs <ArrowRight size={16} />
-          </Link>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <Link to="/onboarding" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '13px 28px', borderRadius: 10,
+              background: 'rgba(255,255,255,0.08)',
+              color: '#f1f5f9', fontSize: 15, fontWeight: 600, textDecoration: 'none',
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}>
+              Complete Your Profile <ArrowRight size={16} />
+            </Link>
+            <Link to="/jobs" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '13px 28px', borderRadius: 10,
+              background: 'linear-gradient(135deg, #059669, #10b981)',
+              color: 'white', fontSize: 15, fontWeight: 600, textDecoration: 'none',
+            }}>
+              Browse Jobs <ArrowRight size={16} />
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -327,7 +345,7 @@ export default function SignupPage() {
             <>
               <h2 style={{ fontSize: 26, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Tell us about yourself</h2>
               <p style={{ fontSize: 14, color: '#64748b', marginBottom: 32 }}>
-                Help us find the best opportunities for you.
+                Share your education, career goals, and a brief professional summary to make your profile application-ready.
               </p>
 
               <form onSubmit={handleStep2}>
@@ -350,6 +368,17 @@ export default function SignupPage() {
                     required
                   />
                 </div>
+                <div style={{ marginBottom: 14 }}>
+                  <label style={labelStyle}>Phone number</label>
+                  <PhoneInput
+                    international
+                    defaultCountry="PK"
+                    value={form.phone}
+                    onChange={value => update('phone', value)}
+                    placeholder="Enter phone number"
+                    style={{ ...inputStyle, width: '100%' }}
+                  />
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
                   <div>
                     <label style={labelStyle}>Graduation year</label>
@@ -360,7 +389,7 @@ export default function SignupPage() {
                       style={{ ...inputStyle, color: form.graduationYear ? '#f1f5f9' : '#475569' }}
                     >
                       <option value="">Select year</option>
-                      {[2025, 2026, 2027, 2028, 2029].map(y => (
+                      {[2025, 2026, 2027, 2028, 2029, 2030, 2031].map(y => (
                         <option key={y} value={y}>{y}</option>
                       ))}
                     </select>
@@ -372,6 +401,27 @@ export default function SignupPage() {
                     options={['Pakistan', 'UK', 'USA', 'Europe', 'Open to all']}
                     placeholder="Select region"
                     required
+                  />
+                </div>
+
+                <div style={{ marginBottom: 14 }}>
+                  <label style={labelStyle}>About You – this will be used in your job applications</label>
+                  <textarea
+                    value={form.bio}
+                    onChange={e => update('bio', e.target.value)}
+                    rows={4}
+                    required
+                    placeholder="Write 2–3 sentences about your background, strengths, and what you want in your next role."
+                    style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: 24 }}>
+                  <SkillPicker
+                    label="Skills (comma separated tags)"
+                    value={form.skills}
+                    onChange={v => update('skills', v)}
+                    placeholder="Type a skill and hit Enter"
                   />
                 </div>
 

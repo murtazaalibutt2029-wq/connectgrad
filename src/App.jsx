@@ -11,6 +11,8 @@ import JobDetailPage from './pages/JobDetailPage'
 import LoginPage from './pages/LoginPage'
 import ProfilePage from './pages/ProfilePage'
 import MassApplyPage from './pages/MassApplyPage'
+import OnboardingPage from './pages/OnboardingPage'
+import EmployerSignupPage from './pages/EmployerSignupPage'
 import EmployerDashboard from './pages/EmployerDashboard'
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/apply/review" element={<MassApplyPage />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/employer/signup" element={<EmployerSignupPage />} />
           <Route path="/employer/dashboard" element={<EmployerDashboard />} />
         </Routes>
       </main>
