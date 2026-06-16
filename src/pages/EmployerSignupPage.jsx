@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, Briefcase, Building2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext'
 
 const industries = [
   'Technology', 'Finance', 'Consulting', 'Healthcare', 'Education',
@@ -11,6 +12,7 @@ const industries = [
 
 export default function EmployerSignupPage() {
   const navigate = useNavigate()
+  const { refreshEmployerStatus } = useAuth()
   const { refreshEmployerStatus } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -53,6 +55,7 @@ export default function EmployerSignupPage() {
           email: form.email,
         })
       if (profileError) throw profileError
+      await refreshEmployerStatus()
       await refreshEmployerStatus()
       setSubmitted(true)
     } catch (err) {
